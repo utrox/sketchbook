@@ -2,21 +2,8 @@ import graphene
 from graphene_django import DjangoObjectType
 
 from .models import CommentLike, PostLike
-from users.schema import UserType
-
-
-class CommentLikeType(DjangoObjectType):
-    class Meta:
-        model = CommentLike
-
-    user = graphene.Field(UserType)
-
-
-class PostLikeType(DjangoObjectType):
-    class Meta:
-        model = PostLike
-
-    user = graphene.Field(UserType)
+from .types import CommentLikeType, PostLikeType
+from .mutations import TogglePostLike, ToggleCommentLike
 
 
 class Query(graphene.ObjectType):
@@ -28,3 +15,8 @@ class Query(graphene.ObjectType):
     
     def resolve_all_likers_for_post(root, info, post_id):
         return PostLike.objects.filter(post_id=post_id)
+
+
+class Mutation(graphene.ObjectType):
+    toggle_comment_like = ToggleCommentLike.Field()
+    toggle_post_like = TogglePostLike.Field()
