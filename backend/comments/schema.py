@@ -1,20 +1,8 @@
 import graphene
-from graphene_django import DjangoObjectType
 
 from .models import Comment
-from users.schema import UserType
-
-
-class CommentType(DjangoObjectType):
-    class Meta:
-        model = Comment
-        fields = ("id", "post_id", "content", "created_at", "updated_at")
-
-    user = graphene.Field(UserType)
-    like_count = graphene.Int()
-
-    def resolve_like_count(self, root, info, **kwargs):
-        return Comment.objects.get(pk=self.id).likes.count()
+from .types import CommentType
+from .mutations import CreateComment, UpdateComment, DeleteComment
 
 
 class Query(graphene.ObjectType):
@@ -22,3 +10,9 @@ class Query(graphene.ObjectType):
 
     def resolve_all_comments_for_post(root, info, post_id):
         return Comment.objects.filter(post_id=post_id)
+
+
+class Mutation(graphene.ObjectType):
+    create_comment = CreateComment.Field()
+    update_comment = UpdateComment.Field()
+    delete_comment = DeleteComment.Field()

@@ -11,5 +11,8 @@ class Comment(TimestampedModel):
     post = models.ForeignKey('posts.Post', on_delete=models.CASCADE, related_name='comments')
     content = models.TextField()
 
+    def can_edit(self, user) -> bool:
+        return user.is_authenticated and self.user == user
+
     def __str__(self):
         return f'{self.user.username} - {self.content[:20]}'

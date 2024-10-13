@@ -1,8 +1,8 @@
 import graphene
 
-from comments.schema import Query as CommentsQuery
-from likes.schema import Query as LikesQuery
-from posts.schema import Query as PostsQuery
+from comments.schema import Query as CommentsQuery, Mutation as CommentsMutation
+from likes.schema import Query as LikesQuery, Mutation as LikesMutation
+from posts.schema import Query as PostsQuery, Mutation as PostsMutation
 from users.schema import Query as UsersQuery
 
 
@@ -17,4 +17,13 @@ class Query(
     pass
 
 
-schema = graphene.Schema(query=Query)
+class Mutation(
+        CommentsMutation,
+        PostsMutation,
+        LikesMutation,
+        graphene.ObjectType
+    ):
+    pass
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
