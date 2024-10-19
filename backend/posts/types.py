@@ -14,6 +14,7 @@ class PostNode(DjangoObjectType):
 
     user = graphene.Field(UserType)
     like_count = graphene.Int()
+    liked_by_user = graphene.Boolean()
     comment_count = graphene.Int()
 
     def resolve_like_count(self, info, **kwargs):
@@ -21,6 +22,12 @@ class PostNode(DjangoObjectType):
     
     def resolve_comment_count(self, info, **kwargs):
         return Post.objects.get(pk=self.id).comments.count()
+    
+    def resolve_liked_by_user(self, info, **kwargs):
+        user = info.context.user
+        if user.is_anonymous:
+            return False
+        return Post.objects.get(pk=self.id).likes.filter(pk=user.id).exists()
 
 
 class PostConnection(relay.Connection):

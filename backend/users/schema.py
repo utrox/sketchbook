@@ -7,7 +7,7 @@ from .models import User
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("username", "avatar", "last_login", "date_joined")
+        fields = ("id", "username", "avatar", "last_login", "date_joined")
 
 
 class Query(graphene.ObjectType):
