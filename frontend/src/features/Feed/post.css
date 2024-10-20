@@ -1,0 +1,6 @@
+.post-body {
+  .bottom-bar {
+    display: flex;
+    align-items: center;
+  }
+}
