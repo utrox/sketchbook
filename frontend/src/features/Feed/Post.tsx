@@ -1,11 +1,8 @@
 import "./post.css";
 
-import { Link } from "react-router-dom";
-import { Avatar, IconButton } from "@mui/material";
-import FavouriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import CommentIcon from "@mui/icons-material/Comment";
-
-import { simplifyCreationEditionTime } from "../../components/TimePassed";
+import CommentsButton from "./Comment/CommentsButton";
+import LikeButton from "./Like/LikeButton";
+import PostCommentHeader from "../../components/PostCommentHeader";
 
 interface PostData {
   id: string;
@@ -25,40 +22,22 @@ const Post = (props: PostData) => {
   return (
     <div className="post-body">
       {/* TODO: Poster-data could be its own component - reusable for Comment.tsx later on  */}
-      <div className="poster-data">
-        <Link to="/profile/TODO:username">
-          {/* TODO: make sure the avatar is for the correct user */}
-          <Avatar
-            alt="TODO: username"
-            src={
-              props.image ||
-              `https://picsum.photos/id/${Math.floor(
-                Math.random() * 800
-              )}/200/400`
-            }
-          />
-        </Link>
-        <div>
-          <Link to="/profile/TODO:username">
-            <p className="username">{props.user.username}</p>
-          </Link>
-          <p>{simplifyCreationEditionTime(props.createdAt, props.updatedAt)}</p>
-        </div>
-      </div>
+      <PostCommentHeader
+        user={props.user}
+        createdAt={props.createdAt}
+        updatedAt={props.updatedAt}
+      />
       <p>{props.content}</p>
       <div className="bottom-bar">
         {/* TODO: add liking functionality when integrating */}
-        <IconButton>
-          {/* TODO: FaviouriteIcon vs FavouriteBorderIcon depending on weather the current user liked the post or not */}
-          <FavouriteBorderIcon />
-        </IconButton>
-        {/* TODO: open list of likers as Modal */}
-        <span className="liketext">{props.likeCount}</span>
+        <LikeButton
+          postId={props.id}
+          likeCount={props.likeCount}
+          onClick={() => {}}
+        />
+
         {/* TODO: open Comments component as Modal */}
-        <IconButton>
-          <CommentIcon />
-        </IconButton>
-        <span>{props.commentCount} comments</span>
+        <CommentsButton postId={props.id} commentCount={props.commentCount} />
       </div>
     </div>
   );

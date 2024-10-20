@@ -1,0 +1,11 @@
+.poster-data {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+
+  div {
+    p {
+      margin: 0;
+    }
+  }
+}

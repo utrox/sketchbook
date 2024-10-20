@@ -1,0 +1,26 @@
+.likers-modal {
+  .liker {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    a p {
+      margin-bottom: 0;
+    }
+  }
+
+  ul li a {
+    width: 20vw;
+  }
+}
+
+span.liketext {
+  color: darkblue;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+span.liketext:hover {
+  text-decoration: underline;
+}

@@ -124,3 +124,15 @@ a {
 .mui-tooltip:hover, .MuiTooltip-tooltip:hover, .MuiTooltip-popper:hover {
   cursor: pointer;
 }
+
+.username {
+  color: blue;
+}
+
+.username:hover {
+  text-decoration: underline;
+}
+
+.MuiDivider-root {
+  border-color: black !important;
+}
