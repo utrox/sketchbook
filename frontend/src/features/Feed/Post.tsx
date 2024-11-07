@@ -13,15 +13,16 @@ interface PostData {
   createdAt: string;
   updatedAt: string;
   user: {
+    id: string;
     username: string;
     avatar: string;
   };
+  innerRef: any;
 }
 
 const Post = (props: PostData) => {
   return (
-    <div className="post-body">
-      {/* TODO: Poster-data could be its own component - reusable for Comment.tsx later on  */}
+    <div className="post-body" ref={props.innerRef}>
       <PostCommentHeader
         user={props.user}
         createdAt={props.createdAt}
@@ -35,8 +36,6 @@ const Post = (props: PostData) => {
           likeCount={props.likeCount}
           onClick={() => {}}
         />
-
-        {/* TODO: open Comments component as Modal */}
         <CommentsButton postId={props.id} commentCount={props.commentCount} />
       </div>
     </div>
