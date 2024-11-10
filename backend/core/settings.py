@@ -56,6 +56,8 @@ MIDDLEWARE = [
     # TODO: commented out for postman requests, uncomment: 
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # TODO: remove this middleware used for development
+    'core.exceptions.auth_test_middleware.AuthenticationDevelopmentMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

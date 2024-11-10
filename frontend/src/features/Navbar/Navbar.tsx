@@ -2,7 +2,7 @@ import "./navbar.css";
 
 import { Navbar, Image } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../api/graphQL/queries/auth";
+import { useAuth } from "../../hooks/useAuth";
 
 /* Icons */
 import HomeIcon from "@mui/icons-material/Home";

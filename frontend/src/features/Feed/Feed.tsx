@@ -22,8 +22,11 @@ export function Feed() {
   };
   const handleClose = () => setPostEditorOpen(false);
 
-  const { data, loading, fetchMore } = useQuery(GET_FEED_DATA, {
+  /* TODO: Possibly refactor this into a hook, like useAuth? */
+  const { data, loading, fetchMore, refetch } = useQuery(GET_FEED_DATA, {
     variables: { first: 10 },
+    // Refetch every 15 seconds TODO: set it to more frequent?
+    pollInterval: 15000,
     // Allows for loading state changes on fetchMore
     notifyOnNetworkStatusChange: true,
   });
@@ -82,7 +85,7 @@ export function Feed() {
       <Container className="content" maxWidth="sm">
         <FakePostEditor onClick={(e) => handleOpen(e)} />
         <Modal open={postEditorOpen} onClose={handleClose}>
-          <PostEditor />
+          <PostEditor closeModal={handleClose} refetchFeed={refetch} />
         </Modal>
         <div className="posts">
           {data &&

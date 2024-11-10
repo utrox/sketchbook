@@ -1,4 +1,4 @@
-import { useAuth } from "../api/graphQL/queries/auth";
+import { useAuth } from "../hooks/useAuth";
 import { Navigate, Outlet } from "react-router-dom";
 
 export const PrivateRoute = () => {
