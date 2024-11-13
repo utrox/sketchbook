@@ -1,6 +1,6 @@
 import graphene
 from .models import Comment
-from .types import CommentType
+from .types import CommentNode
 
 
 class CommentInput(graphene.InputObjectType):
@@ -12,7 +12,7 @@ class CreateComment(graphene.Mutation):
     class Arguments:
         input = CommentInput(required=True)
 
-    comment = graphene.Field(CommentType)
+    comment = graphene.Field(CommentNode)
 
     def mutate(self, info, input=None):
         if not info.context.user.is_authenticated:
@@ -29,7 +29,7 @@ class UpdateComment(graphene.Mutation):
         id = graphene.Int(required=True)
         input = CommentInput(required=True)
 
-    comment = graphene.Field(CommentType)
+    comment = graphene.Field(CommentNode)
 
     def mutate(self, info, id, input):
         try:

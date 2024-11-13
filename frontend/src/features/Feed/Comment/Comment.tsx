@@ -11,11 +11,12 @@ export interface CommentProps {
     username: string;
     avatar: string;
   };
+  innerRef: any;
 }
 
 const Comment = (props: CommentProps) => {
   return (
-    <div>
+    <div ref={props.innerRef}>
       <PostCommentHeader
         user={props.user}
         createdAt={props.createdAt}

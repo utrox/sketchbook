@@ -1,5 +1,5 @@
 import "./comments.css";
-import Comments from "./CommentsModal";
+import CommentsModal from "./CommentsModal";
 
 import { useState } from "react";
 import { IconButton, Modal } from "@mui/material";
@@ -25,7 +25,7 @@ const CommentsButton = ({ postId, commentCount }: CommentsButtonProps) => {
         {commentCount} comments
       </span>
       <Modal open={commentsModalOpen} onClose={closeModal}>
-        <Comments postId={postId} />
+        <CommentsModal postId={postId} key={postId} />
       </Modal>
     </>
   );

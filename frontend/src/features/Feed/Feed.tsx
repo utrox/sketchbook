@@ -6,7 +6,7 @@ import Navbar from "../Navbar/Navbar";
 import PostEditor from "../posting/PostEditor";
 import FakePostEditor from "../posting/FakePostEditor";
 import Post from "./Post";
-import { GET_FEED_DATA } from "../../api/graphQL/queries/feed.tsx";
+import { GET_FEED_DATA } from "../../api/graphQL/queries/feed.ts";
 import FeedPostType from "../../api/graphQL/types/FeedPostType.ts";
 
 export function Feed() {
