@@ -6,6 +6,7 @@ import Comment, { CommentProps } from "./Comment.tsx";
 import CommentEditor from "./CommentEditor.tsx";
 import CommentType from "../../../api/graphQL/types/CommentType.ts";
 import { GET_COMMENTS_FOR_POST } from "../../../api/graphQL/queries/comment.ts";
+import InfiniteScroll from "../../../components/InfiniteScroll.tsx";
 
 const CommentsModal = ({ postId }: { postId: string }) => {
   const [comments, setComments] = useState<CommentProps[]>([]);
@@ -59,26 +60,6 @@ const CommentsModal = ({ postId }: { postId: string }) => {
     }
   };
 
-  /* Infinite scroll implementation */
-  /* TODO: make reusable useInfiniteScroll hook instead? */
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastPostComponentRef = useCallback(
-    (element: HTMLDivElement) => {
-      if (loading) return;
-      /* Remove observer from current last element */
-      if (observer.current) observer.current.disconnect();
-      /* Fetch more data, new Posts will be rendered */
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreItems();
-        }
-      });
-      /* Add it to the new last element. */
-      if (element) observer.current.observe(element);
-    },
-    [loading]
-  );
-
   return (
     <Container maxWidth="sm" className="comments-modal">
       <DialogTitle>Comments</DialogTitle>
@@ -86,19 +67,16 @@ const CommentsModal = ({ postId }: { postId: string }) => {
       <List>
         {/* TODO: 'No comments' doesnt fill up enough space, so the CommentEditor component is just in the middle vertically */}
         {/* TODO: when only one comment exists, the same issue persists (doesnt fill the component enough vetically) */}
-        {comments.length === 0 && <p className="no-comments">No comments</p>}
-        {comments.map((comment, index) => (
-          <Fragment key={comment.id}>
-            <Comment
-              key={`${comment.id}-${index}`}
-              {...comment}
-              innerRef={
-                index === comments.length - 1 ? lastPostComponentRef : null
-              }
-            />
-            <Divider variant="middle" />
-          </Fragment>
-        ))}
+        <InfiniteScroll
+          items={comments}
+          loading={loading}
+          ItemComponent={Comment}
+          itemProps={{}}
+          hasMore={data?.allCommentsForPost.pageInfo.hasNextPage}
+          loadMoreItems={loadMoreItems}
+          loadingComponent={<div>Loading...</div>}
+          hasNoElementComponent={<div>No comments</div>}
+        />
       </List>
       {/* TODO: comment editor at the bottom, but fixed, so that you dont gotta scroll all the way to the bottom of all comments */}
       <CommentEditor postId={postId} refetchComments={refetch} />

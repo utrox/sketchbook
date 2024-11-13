@@ -8,6 +8,7 @@ import FakePostEditor from "../posting/FakePostEditor";
 import Post from "./Post";
 import { GET_FEED_DATA } from "../../api/graphQL/queries/feed.ts";
 import FeedPostType from "../../api/graphQL/types/FeedPostType.ts";
+import InfiniteScroll from "../../components/InfiniteScroll.tsx";
 
 export function Feed() {
   const [postEditorOpen, setPostEditorOpen] = useState(false);
@@ -60,25 +61,6 @@ export function Feed() {
     }
   };
 
-  /* Infinite scroll */
-  const observer = useRef<IntersectionObserver | null>(null);
-  const lastPostComponentRef = useCallback(
-    (element: HTMLDivElement) => {
-      if (loading) return;
-      /* Remove observer from current last element */
-      if (observer.current) observer.current.disconnect();
-      /* Fetch more data, new Posts will be rendered */
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          loadMoreItems();
-        }
-      });
-      /* Add it to the new last element. */
-      if (element) observer.current.observe(element);
-    },
-    [loading]
-  );
-
   return (
     <>
       <Navbar />
@@ -88,23 +70,19 @@ export function Feed() {
           <PostEditor closeModal={handleClose} refetchFeed={refetch} />
         </Modal>
         <div className="posts">
-          {data &&
-            items.map((post: FeedPostType, index: number) => (
-              <Post
-                key={post.id}
-                {...post}
-                /* Set it up so that only the last one has the ref. */
-                innerRef={
-                  index === items.length - 1 ? lastPostComponentRef : null
-                }
-              />
-            ))}
+          <InfiniteScroll
+            items={items}
+            loading={loading}
+            ItemComponent={Post}
+            itemProps={{}}
+            hasMore={data?.feed?.pageInfo?.hasNextPage}
+            loadMoreItems={loadMoreItems}
+            /* TODO better component for showing these messages, and loading  */
+            loadingComponent={<div>Loading...</div>}
+            hasNoElementComponent={<div>No posts yet...</div>}
+            hasNoMoreComponent={<div>No more posts</div>}
+          />
         </div>
-        {/* TODO better component for showing these messages */}
-        {items.length === 0 && !loading && <p>No posts yet.</p>}
-        {!data?.feed?.pageInfo?.hasNextPage && <p>No more posts.</p>}
-        {/* TODO: loading component */}
-        {loading && <p>Loading...</p>}
       </Container>
     </>
   );
