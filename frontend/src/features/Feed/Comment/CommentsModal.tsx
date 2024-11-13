@@ -64,7 +64,6 @@ const CommentsModal = ({ postId }: { postId: string }) => {
   const observer = useRef<IntersectionObserver | null>(null);
   const lastPostComponentRef = useCallback(
     (element: HTMLDivElement) => {
-      console.log("observer: ", observer);
       if (loading) return;
       /* Remove observer from current last element */
       if (observer.current) observer.current.disconnect();
@@ -102,7 +101,7 @@ const CommentsModal = ({ postId }: { postId: string }) => {
         ))}
       </List>
       {/* TODO: comment editor at the bottom, but fixed, so that you dont gotta scroll all the way to the bottom of all comments */}
-      <CommentEditor onSubmit={() => {}} />
+      <CommentEditor postId={postId} refetchComments={refetch} />
     </Container>
   );
 };
