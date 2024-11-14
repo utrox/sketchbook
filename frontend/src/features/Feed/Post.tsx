@@ -10,6 +10,7 @@ interface PostData {
   content: string;
   image: string;
   likeCount: number;
+  likedByUser: boolean;
   commentCount: number;
   createdAt: string;
   updatedAt: string;
@@ -22,7 +23,7 @@ interface PostData {
 }
 
 const Post = (props: PostData) => {
-  const postNumericId = graphqlIdToNumericId(props.id);
+  const postNumericId = Number.parseInt(graphqlIdToNumericId(props.id));
   return (
     <div className="post-body" ref={props.innerRef}>
       <PostCommentHeader
@@ -32,11 +33,10 @@ const Post = (props: PostData) => {
       />
       <p>{props.content}</p>
       <div className="bottom-bar">
-        {/* TODO: add liking functionality when integrating */}
         <LikeButton
           postId={postNumericId}
+          liked={props.likedByUser}
           likeCount={props.likeCount}
-          onClick={() => {}}
         />
         <CommentsButton
           postId={postNumericId}

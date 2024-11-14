@@ -8,7 +8,7 @@ import CommentType from "../../../api/graphQL/types/CommentType.ts";
 import { GET_COMMENTS_FOR_POST } from "../../../api/graphQL/queries/comment.ts";
 import InfiniteScroll from "../../../components/InfiniteScroll.tsx";
 
-const CommentsModal = ({ postId }: { postId: string }) => {
+const CommentsModal = ({ postId }: { postId: number }) => {
   const [comments, setComments] = useState<CommentProps[]>([]);
   /* Fetch comments */
   const { data, loading, fetchMore, refetch } = useQuery(

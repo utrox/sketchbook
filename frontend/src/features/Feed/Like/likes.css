@@ -24,3 +24,23 @@ span.liketext {
 span.liketext:hover {
   text-decoration: underline;
 }
+
+@keyframes like-bounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.like-button.animating {
+  animation: like-bounce 0.3s;
+}
+
+.like-button:hover {
+  color: red;
+}

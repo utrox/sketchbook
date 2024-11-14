@@ -1,42 +1,61 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { IconButton, Dialog } from "@mui/material";
+import { toast } from "react-toastify";
 
-import FavouriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavouriteIcon from "@mui/icons-material/Favorite";
-import LikersModal from "./LikersModal";
+import FavouriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
-interface LikeButtonProps {
-  postId?: string;
-  commentId?: string;
+import LikersModal from "./LikersModal";
+import useTogglePostLike from "../../../hooks/useTogglePostLike";
+import useToggleCommentLike from "../../../hooks/useToggleCommentLike";
+
+type LikeButtonProps = {
+  liked: boolean;
   likeCount: number;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-}
+} /* Either postId, or commentId is required. */ & (
+  | { postId: number; commentId?: never }
+  | { postId?: never; commentId: number }
+);
 
 const LikeButton = ({
+  liked,
   postId,
   commentId,
   likeCount,
-  onClick,
 }: LikeButtonProps) => {
-  /* TODO: remove this, only here for demo purposes */
-  const [liked, setLiked] = React.useState(false);
-  const [likersModalOpen, setLikersModalOpen] = React.useState(false);
-  const handleCloseLikersModalLikersModal = () => setLikersModalOpen(true);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [likersModalOpen, setLikersModalOpen] = useState(false);
+  const handleCloseLikersModal = () => setLikersModalOpen(true);
   const handleClose = () => setLikersModalOpen(false);
+
+  useEffect(() => {
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 300);
+  }, [liked]);
+
+  /* Set up whether it's a LikeButton for a Comment or a Post component. */
+  const toggleLike = postId
+    ? useTogglePostLike({ postId, liked, likeCount }).togglePostLike
+    : commentId
+    ? useToggleCommentLike({ commentId, liked, likeCount }).toggleCommentLike
+    : () =>
+        toast.error(
+          "LikeButton component configured wrong. No commentId or postId provided."
+        );
 
   return (
     <>
-      <IconButton onClick={() => setLiked(!liked)}>
-        {/* TODO: some kind of animation when liking/disliking? */}
-        {/* TODO: FaviouriteIcon vs FavouriteBorderIcon depending on weather the current user liked the post or not */}
+      <IconButton
+        onClick={() => toggleLike()}
+        className={isAnimating ? "like-button animating" : "like-button"}
+      >
         {liked ? (
           <FavouriteIcon style={{ color: "red" }} />
         ) : (
           <FavouriteBorderIcon />
         )}
       </IconButton>
-      {/* TODO: open list of likers as Modal */}
-      <span className="liketext" onClick={handleCloseLikersModalLikersModal}>
+      <span className="liketext" onClick={handleCloseLikersModal}>
         {likeCount}
       </span>
       <Dialog open={likersModalOpen} onClose={handleClose}>

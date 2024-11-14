@@ -8,3 +8,7 @@ export const graphqlIdToNumericId = (idString: string) => {
  */
   return atob(idString).split(":")[1];
 };
+
+export const numericIdToGraphqlId = (type: string, id: number) => {
+  return btoa(`${type}:${id}`);
+};

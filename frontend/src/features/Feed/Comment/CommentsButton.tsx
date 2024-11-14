@@ -6,7 +6,7 @@ import { IconButton, Modal } from "@mui/material";
 import CommentIcon from "@mui/icons-material/Comment";
 
 interface CommentsButtonProps {
-  postId: string;
+  postId: number;
   commentCount: number;
 }
 

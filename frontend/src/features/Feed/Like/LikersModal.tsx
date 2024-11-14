@@ -12,8 +12,8 @@ import LikeType from "../../../api/graphQL/types/LikeType";
 import "./likes.css";
 
 interface LikersModalProps {
-  postId?: string;
-  commentId?: string;
+  postId?: number;
+  commentId?: number;
 }
 
 const LikersModal = ({ postId, commentId }: LikersModalProps) => {

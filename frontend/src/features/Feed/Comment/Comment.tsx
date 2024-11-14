@@ -8,6 +8,7 @@ export interface CommentProps {
   id: string;
   content: string;
   likeCount: number;
+  likedByUser: boolean;
   createdAt: string;
   updatedAt: string;
   user: {
@@ -18,7 +19,7 @@ export interface CommentProps {
 }
 
 const Comment = (props: CommentProps) => {
-  const commentNumericId = graphqlIdToNumericId(props.id);
+  const commentNumericId = Number.parseInt(graphqlIdToNumericId(props.id));
   return (
     <>
       <div ref={props.innerRef}>
@@ -31,7 +32,7 @@ const Comment = (props: CommentProps) => {
         <LikeButton
           commentId={commentNumericId}
           likeCount={props.likeCount}
-          onClick={() => {}}
+          liked={props.likedByUser}
         />
       </div>
       <Divider variant="middle" />

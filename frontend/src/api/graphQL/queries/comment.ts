@@ -8,6 +8,7 @@ export const GET_COMMENTS_FOR_POST = gql`
           id
           content
           likeCount
+          likedByUser
           createdAt
           updatedAt
           user {
