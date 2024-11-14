@@ -1,5 +1,6 @@
 import { Divider } from "@mui/material";
 
+import { graphqlIdToNumericId } from "../../../utils";
 import PostCommentHeader from "../../../components/PostCommentHeader";
 import LikeButton from "../Like/LikeButton";
 
@@ -17,6 +18,7 @@ export interface CommentProps {
 }
 
 const Comment = (props: CommentProps) => {
+  const commentNumericId = graphqlIdToNumericId(props.id);
   return (
     <>
       <div ref={props.innerRef}>
@@ -27,7 +29,7 @@ const Comment = (props: CommentProps) => {
         />
         <p>{props.content}</p>
         <LikeButton
-          commentId={props.id}
+          commentId={commentNumericId}
           likeCount={props.likeCount}
           onClick={() => {}}
         />

@@ -37,7 +37,7 @@ const CommentEditor = ({
         setCommentContent("");
         toast.success("Comment created successfully.");
         refetchComments();
-        document.body.scrollTop = document.documentElement.scrollTop = 0;
+        /* TODO: after commenting, scroll up to see the newly added comment */
       }
     }
   };

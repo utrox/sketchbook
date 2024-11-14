@@ -1,14 +1,15 @@
-import "./likes.css";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { Divider, List, DialogTitle } from "@mui/material";
+
 import {
-  Avatar,
-  Divider,
-  List,
-  ListItemAvatar,
-  DialogTitle,
-  ListItem,
-  ListItemButton,
-} from "@mui/material";
+  GET_LIKERS_FOR_COMMENT,
+  GET_LIKERS_FOR_POST,
+} from "../../../api/graphQL/queries/likers";
+import InfiniteScroll from "../../../components/InfiniteScroll";
+import Liker from "./Liker";
+import LikeType from "../../../api/graphQL/types/LikeType";
+import "./likes.css";
 
 interface LikersModalProps {
   postId?: string;
@@ -16,44 +17,73 @@ interface LikersModalProps {
 }
 
 const LikersModal = ({ postId, commentId }: LikersModalProps) => {
-  /* TODO: integration: 
-  fetch list of likers of post/comment w/ pagination */
-  console.log(postId);
-  console.log(commentId);
-  const dummyLikers = [
-    {
-      username: "dummy1",
-      avatar: "https://picsum.photos/211/200/200",
+  const [likers, setLikers] = useState([]);
+  /*
+  Depending on if this is a Likers modal for a Comment or Post, 
+  request and access the data differently 
+  */
+  const QUERY_TO_USE = postId ? GET_LIKERS_FOR_POST : GET_LIKERS_FOR_COMMENT;
+  const queryPropertyName = postId ? "allLikersForPost" : "allLikersForComment";
+
+  const { data, loading, fetchMore } = useQuery(QUERY_TO_USE, {
+    variables: {
+      postId: postId,
+      commentId: commentId,
+      first: 10,
     },
-    {
-      username: "dummy2",
-      avatar: "https://picsum.photos/444/200/200",
-    },
-    {
-      username: "dummy3",
-      avatar: "https://picsum.photos/241/200/200",
-    },
-  ];
+    pollInterval: 15000,
+    notifyOnNetworkStatusChange: true,
+  });
+
+  useEffect(() => {
+    if (data) {
+      setLikers(
+        data[queryPropertyName].edges.map(
+          (edge: { node: LikeType }) => edge.node
+        )
+      );
+    }
+  }, [data]);
+
+  const loadMoreItems = () => {
+    if (data[queryPropertyName].pageInfo.hasNextPage) {
+      fetchMore({
+        variables: {
+          after: data[queryPropertyName].pageInfo.endCursor,
+          postId: postId,
+        },
+        updateQuery: (prevResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prevResult;
+
+          return {
+            [queryPropertyName]: {
+              ...fetchMoreResult[queryPropertyName],
+              edges: [
+                ...prevResult[queryPropertyName].edges,
+                ...fetchMoreResult[queryPropertyName].edges,
+              ],
+            },
+          };
+        },
+      });
+    }
+  };
+
   return (
     <div className="likers-modal">
       <DialogTitle>Likers:</DialogTitle>
       <Divider />
       <List>
-        {new Array(20)
-          .fill(dummyLikers)
-          .flat()
-          .map((liker: { username: string; avatar: string }) => (
-            <ListItem key={liker.username} className="liker">
-              <Link to={`/profile/${liker.username}`}>
-                <ListItemButton onClick={() => {}}>
-                  <ListItemAvatar>
-                    <Avatar src={liker.avatar} alt={liker.username} />
-                  </ListItemAvatar>
-                  <p className="username">{liker.username}</p>
-                </ListItemButton>
-              </Link>
-            </ListItem>
-          ))}
+        <InfiniteScroll
+          items={likers}
+          loading={loading}
+          ItemComponent={Liker}
+          itemProps={{}}
+          hasMore={data?.[queryPropertyName].pageInfo.hasNextPage}
+          loadMoreItems={loadMoreItems}
+          loadingComponent={<div>Loading...</div>}
+          hasNoElementComponent={<div>No likers.</div>}
+        />
       </List>
     </div>
   );

@@ -1,5 +1,6 @@
 import "./post.css";
 
+import { graphqlIdToNumericId } from "../../utils";
 import CommentsButton from "./Comment/CommentsButton";
 import LikeButton from "./Like/LikeButton";
 import PostCommentHeader from "../../components/PostCommentHeader";
@@ -21,14 +22,7 @@ interface PostData {
 }
 
 const Post = (props: PostData) => {
-  /*
-  The GraphQL graphene relay Node overrides the id field
-  of the object and returns a base64 encoded string
-  representing the type of the object and the id in form
-  of type:id. We need the numeric ID for further operations, 
-  so we read it from the base64 encoded string.
- */
-  const postNumericId = atob(props.id).split(":")[1];
+  const postNumericId = graphqlIdToNumericId(props.id);
   return (
     <div className="post-body" ref={props.innerRef}>
       <PostCommentHeader
@@ -40,7 +34,7 @@ const Post = (props: PostData) => {
       <div className="bottom-bar">
         {/* TODO: add liking functionality when integrating */}
         <LikeButton
-          postId={props.id}
+          postId={postNumericId}
           likeCount={props.likeCount}
           onClick={() => {}}
         />

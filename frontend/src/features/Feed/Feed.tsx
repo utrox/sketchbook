@@ -1,4 +1,4 @@
-import { MouseEvent, useState, useRef, useCallback, useEffect } from "react";
+import { MouseEvent, useState, useEffect } from "react";
 import { Container, Modal } from "@mui/material";
 import { useQuery } from "@apollo/client";
 

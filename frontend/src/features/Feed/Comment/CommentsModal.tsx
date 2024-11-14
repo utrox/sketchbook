@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Fragment, useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { DialogTitle, Divider, List, Container } from "@mui/material";
 
 import Comment, { CommentProps } from "./Comment.tsx";

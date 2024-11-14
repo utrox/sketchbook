@@ -1,7 +1,7 @@
 import graphene
 
 from .models import CommentLike, PostLike
-from .types import CommentLikeType, PostLikeType
+from .types import CommentLikeNode, PostLikeNode
 
 from posts.models import Post
 from comments.models import Comment
@@ -14,7 +14,7 @@ class ToggleCommentLike(graphene.Mutation):
     class Arguments:
         comment_id = graphene.ID(required=True)
 
-    comment = graphene.Field(CommentLikeType)
+    comment = graphene.Field(CommentLikeNode)
     like_status = graphene.Boolean()
 
     def mutate(self, info, comment_id=None):
@@ -46,7 +46,7 @@ class TogglePostLike(graphene.Mutation):
     class Arguments:
         post_id = graphene.ID(required=True)
 
-    post = graphene.Field(PostLikeType)
+    post = graphene.Field(PostLikeNode)
     like_status = graphene.Boolean()
 
     def mutate(self, info, post_id=None):
