@@ -1,14 +1,13 @@
 import { MouseEvent, useState, useEffect } from "react";
 import { Container, Modal } from "@mui/material";
-import { useQuery } from "@apollo/client";
 
 import Navbar from "../Navbar/Navbar";
 import PostEditor from "../posting/PostEditor";
 import FakePostEditor from "../posting/FakePostEditor";
 import Post from "./Post";
-import { GET_FEED_DATA } from "../../api/graphQL/queries/feed.ts";
 import FeedPostType from "../../api/graphQL/types/FeedPostType.ts";
 import InfiniteScroll from "../../components/InfiniteScroll.tsx";
+import useQueryFeed from "../../hooks/useQueryFeed.ts";
 
 export function Feed() {
   const [postEditorOpen, setPostEditorOpen] = useState(false);
@@ -23,14 +22,7 @@ export function Feed() {
   };
   const handleClose = () => setPostEditorOpen(false);
 
-  /* TODO: Possibly refactor this into a hook, like useAuth? */
-  const { data, loading, fetchMore, refetch } = useQuery(GET_FEED_DATA, {
-    variables: { first: 10 },
-    // Refetch every 15 seconds TODO: set it to more frequent?
-    pollInterval: 15000,
-    // Allows for loading state changes on fetchMore
-    notifyOnNetworkStatusChange: true,
-  });
+  const { data, loading, loadMoreItems, refetch } = useQueryFeed();
 
   useEffect(() => {
     if (data) {
@@ -39,27 +31,6 @@ export function Feed() {
       );
     }
   }, [data]);
-
-  /* Cursor-based pagination, refetch next items from the last one */
-  const loadMoreItems = () => {
-    if (data.feed.pageInfo.hasNextPage) {
-      fetchMore({
-        variables: {
-          after: data.feed.pageInfo.endCursor,
-        },
-        updateQuery: (prevResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prevResult;
-
-          return {
-            feed: {
-              ...fetchMoreResult.feed,
-              edges: [...prevResult.feed.edges, ...fetchMoreResult.feed.edges],
-            },
-          };
-        },
-      });
-    }
-  };
 
   return (
     <>

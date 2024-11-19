@@ -1,30 +1,15 @@
-import { useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { DialogTitle, Divider, List, Container } from "@mui/material";
 
+import useQueryComments from "../../../hooks/useQueryComments.ts";
 import Comment, { CommentProps } from "./Comment.tsx";
 import CommentEditor from "./CommentEditor.tsx";
 import CommentType from "../../../api/graphQL/types/CommentType.ts";
-import { GET_COMMENTS_FOR_POST } from "../../../api/graphQL/queries/comment.ts";
 import InfiniteScroll from "../../../components/InfiniteScroll.tsx";
 
 const CommentsModal = ({ postId }: { postId: number }) => {
   const [comments, setComments] = useState<CommentProps[]>([]);
-  /* Fetch comments */
-  const { data, loading, fetchMore, refetch } = useQuery(
-    GET_COMMENTS_FOR_POST,
-    {
-      variables: {
-        after: null,
-        postId: postId,
-        first: 5,
-      },
-      // Refetch every 15 seconds TODO: set it to more frequent?
-      pollInterval: 15000,
-      // Allows for loading state changes on fetchMore
-      notifyOnNetworkStatusChange: true,
-    }
-  );
+  const { data, loading, loadMoreItems, refetch } = useQueryComments(postId);
 
   useEffect(() => {
     if (data) {
@@ -35,30 +20,6 @@ const CommentsModal = ({ postId }: { postId: number }) => {
       );
     }
   }, [data]);
-
-  const loadMoreItems = () => {
-    if (data.allCommentsForPost.pageInfo.hasNextPage) {
-      fetchMore({
-        variables: {
-          after: data.allCommentsForPost.pageInfo.endCursor,
-          postId: postId,
-        },
-        updateQuery: (prevResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return prevResult;
-
-          return {
-            allCommentsForPost: {
-              ...fetchMoreResult.allCommentsForPost,
-              edges: [
-                ...prevResult.allCommentsForPost.edges,
-                ...fetchMoreResult.allCommentsForPost.edges,
-              ],
-            },
-          };
-        },
-      });
-    }
-  };
 
   return (
     <Container maxWidth="sm" className="comments-modal">
@@ -78,7 +39,6 @@ const CommentsModal = ({ postId }: { postId: number }) => {
           hasNoElementComponent={<div>No comments</div>}
         />
       </List>
-      {/* TODO: comment editor at the bottom, but fixed, so that you dont gotta scroll all the way to the bottom of all comments */}
       <CommentEditor postId={postId} refetchComments={refetch} />
     </Container>
   );
