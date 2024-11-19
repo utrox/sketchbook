@@ -17,15 +17,10 @@ const PostCommentHeader = (props: PostCommentHeaderProps) => {
   return (
     <div className="poster-data">
       <Link to={`/profile/${props.user.username}`}>
-        {/* TODO: remove avatar placeholder image */}
         <Avatar
           alt={props.user.username}
-          src={
-            props.user.avatar ||
-            `https://picsum.photos/id/${Math.floor(
-              Math.random() * 800
-            )}/200/400`
-          }
+          /* TODO: production link image */
+          src={`http://127.0.0.1:8000/${props.user.avatar}`}
         />
       </Link>
       <div>

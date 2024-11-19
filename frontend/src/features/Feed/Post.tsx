@@ -1,5 +1,6 @@
 import "./post.css";
 
+import { graphqlIdToNumericId } from "../../utils";
 import CommentsButton from "./Comment/CommentsButton";
 import LikeButton from "./Like/LikeButton";
 import PostCommentHeader from "../../components/PostCommentHeader";
@@ -9,19 +10,22 @@ interface PostData {
   content: string;
   image: string;
   likeCount: number;
+  likedByUser: boolean;
   commentCount: number;
   createdAt: string;
   updatedAt: string;
   user: {
+    id: string;
     username: string;
     avatar: string;
   };
+  innerRef: any;
 }
 
 const Post = (props: PostData) => {
+  const postNumericId = Number.parseInt(graphqlIdToNumericId(props.id));
   return (
-    <div className="post-body">
-      {/* TODO: Poster-data could be its own component - reusable for Comment.tsx later on  */}
+    <div className="post-body" ref={props.innerRef}>
       <PostCommentHeader
         user={props.user}
         createdAt={props.createdAt}
@@ -29,15 +33,15 @@ const Post = (props: PostData) => {
       />
       <p>{props.content}</p>
       <div className="bottom-bar">
-        {/* TODO: add liking functionality when integrating */}
         <LikeButton
-          postId={props.id}
+          postId={postNumericId}
+          liked={props.likedByUser}
           likeCount={props.likeCount}
-          onClick={() => {}}
         />
-
-        {/* TODO: open Comments component as Modal */}
-        <CommentsButton postId={props.id} commentCount={props.commentCount} />
+        <CommentsButton
+          postId={postNumericId}
+          commentCount={props.commentCount}
+        />
       </div>
     </div>
   );

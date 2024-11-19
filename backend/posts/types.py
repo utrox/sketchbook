@@ -31,7 +31,7 @@ class PostNode(DjangoObjectType):
         user = info.context.user
         if user.is_anonymous:
             return False
-        return Post.objects.get(pk=self.id).likes.filter(pk=user.id).exists()
+        return Post.objects.get(pk=self.id).likes.filter(user_id=user.id).exists()
 
 
 class PostConnection(relay.Connection):

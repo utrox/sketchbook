@@ -3,14 +3,40 @@ import "./posteditors.css";
 import { useState } from "react";
 import { Button, IconButton, Container, TextField } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
+import { useMutation } from "@apollo/client";
+import { toast } from "react-toastify";
+
+import { CREATE_POST_MUTATION } from "../../api/graphQL/mutations/post";
 
 interface PostEditProps {
   id?: number | null;
   content?: string;
+  closeModal: () => void;
+  refetchFeed: () => void;
 }
 
-const PostEditor = ({ id = null, content = "" }: PostEditProps) => {
+const PostEditor = ({
+  id = null,
+  content = "",
+  closeModal,
+  refetchFeed,
+}: PostEditProps) => {
   const [postContent, setContent] = useState(content);
+  const [createPost, { error, loading }] = useMutation(CREATE_POST_MUTATION);
+
+  const submitForm = async () => {
+    await createPost({
+      variables: { content: postContent },
+    });
+
+    if (!error && !loading) {
+      setContent("");
+      toast.success("Post created successfully.");
+      refetchFeed();
+      closeModal();
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
+  };
 
   return (
     <Container className="content modal-content" maxWidth="sm">
@@ -29,9 +55,12 @@ const PostEditor = ({ id = null, content = "" }: PostEditProps) => {
         <IconButton aria-label="delete">
           <ImageIcon />
         </IconButton>
-        {/* TODO: create the post API call */}
-        <Button variant="contained">{id ? "Edit" : "Post"}</Button>
+        <Button variant="contained" onClick={submitForm}>
+          {id ? "Edit" : "Post"}
+        </Button>
       </div>
+      {/* TODO: loading component... */}
+      {loading && <p>Loading...</p>}
     </Container>
   );
 };

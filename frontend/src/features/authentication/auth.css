@@ -47,11 +47,11 @@
     }
 
     .register-rightSide {
-      --img-url: url("https://img.freepik.com/free-vector/set-different-doodle-hearts-sketch-design_1035-20325.jpg");
+      --img-url: url("../../assets/img/register.png");
     }
 
     .login-leftSide {
-      --img-url: url("https://img.freepik.com/premium-vector/school-stationery-items-sheet-with-blank-sheet-middle-doodle-line-drawing-vector_549497-671.jpg?w=740");
+      --img-url: url("../../assets/img/login.png");
     }
 
     .login-leftSide,
