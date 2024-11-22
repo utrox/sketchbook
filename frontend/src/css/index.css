@@ -137,7 +137,7 @@ a {
   border-color: black !important;
 }
 
-.MuiContainer-root {
+.MuiContainer-root.post-editor {
   max-height: 90vh;
   overflow-y: auto;
 }

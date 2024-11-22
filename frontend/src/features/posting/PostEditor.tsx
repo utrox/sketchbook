@@ -54,7 +54,7 @@ const PostEditor = ({
   };
 
   return (
-    <Container className="content modal-content" maxWidth="sm">
+    <Container className="content modal-content post-editor" maxWidth="sm">
       <h1>{postId ? "Edit a post" : "Create a post"}</h1>
       <TextField
         fullWidth
