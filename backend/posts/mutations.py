@@ -29,7 +29,7 @@ class CreatePost(graphene.Mutation):
 class UpdatePost(graphene.Mutation):
     class Arguments:
         id = graphene.Int(required=True)
-        input = PostInput(required=True)
+        post_data = PostInput(required=True)
 
     post = graphene.Field(PostNode)
 
@@ -38,15 +38,15 @@ class UpdatePost(graphene.Mutation):
             return False
 
 
-    def mutate(self, info, id, input):
+    def mutate(self, info, id, post_data):
         try:
             post = Post.objects.get(pk=id)
 
             if not post.can_edit(info.context.user):
                 raise Exception("You are not authorized to edit this post.")
             
-            post.content = input.content
-            post.image = input.image
+            post.content = post_data.content
+            post.image = post_data.image
             
             post.save()
             return UpdatePost(post=post)

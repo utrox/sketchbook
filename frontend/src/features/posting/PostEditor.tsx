@@ -1,46 +1,61 @@
 import "./posteditors.css";
 
 import { useState } from "react";
-import { Button, IconButton, Container, TextField } from "@mui/material";
-import ImageIcon from "@mui/icons-material/Image";
-import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
+import ImageIcon from "@mui/icons-material/Image";
+import { Button, IconButton, Container, TextField } from "@mui/material";
 
-import { CREATE_POST_MUTATION } from "../../api/graphQL/mutations/post";
+import useEditPost from "../../hooks/useEditPost";
+import useCreatePost from "../../hooks/useCreatePost";
 
 interface PostEditProps {
-  id?: number | null;
-  content?: string;
+  postId?: number | null;
+  initialContent?: string;
   closeModal: () => void;
-  refetchFeed: () => void;
+  refetchFeed?: () => void;
 }
 
 const PostEditor = ({
-  id = null,
-  content = "",
+  postId = null,
+  initialContent = "",
   closeModal,
   refetchFeed,
 }: PostEditProps) => {
-  const [postContent, setContent] = useState(content);
-  const [createPost, { error, loading }] = useMutation(CREATE_POST_MUTATION);
+  const [postContent, setContent] = useState(initialContent);
+  const {
+    editPost,
+    error: updateError,
+    loading: updateLoading,
+  } = useEditPost();
+  const {
+    makePost,
+    error: createError,
+    loading: createLoading,
+  } = useCreatePost();
 
   const submitForm = async () => {
-    await createPost({
-      variables: { content: postContent },
-    });
+    if (postId) {
+      await editPost(postId, postContent);
+    } else {
+      await makePost(postContent);
+    }
 
-    if (!error && !loading) {
+    if (!createError && !updateError && !createLoading && !updateLoading) {
       setContent("");
-      toast.success("Post created successfully.");
-      refetchFeed();
+      toast.success(`Post ${postId ? "updated" : "created"} successfully.`);
+      refetchFeed && refetchFeed();
       closeModal();
+    }
+
+    if (!postId) {
+      // Scroll up to the top to see freshly added Post.
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
   };
 
   return (
-    <Container className="content modal-content" maxWidth="sm">
-      <h1>{id ? "Edit a post" : "Create a post"}</h1>
+    <Container className="content modal-content post-editor" maxWidth="sm">
+      <h1>{postId ? "Edit a post" : "Create a post"}</h1>
       <TextField
         fullWidth
         multiline
@@ -56,11 +71,11 @@ const PostEditor = ({
           <ImageIcon />
         </IconButton>
         <Button variant="contained" onClick={submitForm}>
-          {id ? "Edit" : "Post"}
+          {postId ? "Edit" : "Post"}
         </Button>
       </div>
       {/* TODO: loading component... */}
-      {loading && <p>Loading...</p>}
+      {createLoading && <p>Loading...</p>}
     </Container>
   );
 };

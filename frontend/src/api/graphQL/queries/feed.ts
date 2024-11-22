@@ -14,6 +14,7 @@ export const GET_FEED_DATA = gql`
           createdAt
           updatedAt
           user {
+            id
             username
             avatar
           }

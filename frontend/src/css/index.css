@@ -136,3 +136,8 @@ a {
 .MuiDivider-root {
   border-color: black !important;
 }
+
+.MuiContainer-root.post-editor {
+  max-height: 90vh;
+  overflow-y: auto;
+}

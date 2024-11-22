@@ -34,7 +34,7 @@ span.comments:hover, .comment-icon:hover {
     }
 
     ul {
-        overflow-y: scroll;
+        overflow-y: auto;
         scrollbar-width: thin;
         padding-right: 10px !important;
         padding: 0 1.5rem;

@@ -15,3 +15,28 @@ export const CREATE_POST_MUTATION = gql`
     }
   }
 `;
+
+export const EDIT_POST_MUTATION = gql`
+  mutation UpdatePost($id: Int!, $content: String!) {
+    updatePost(id: $id, postData: { content: $content }) {
+      post {
+        content
+        image
+        createdAt
+        updatedAt
+        user {
+          username
+          avatar
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_POST_MUTATION = gql`
+  mutation DeletePost($id: Int!) {
+    deletePost(id: $id) {
+      ok
+    }
+  }
+`;
