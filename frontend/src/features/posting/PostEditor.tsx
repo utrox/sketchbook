@@ -6,25 +6,30 @@ import ImageIcon from "@mui/icons-material/Image";
 import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
 
-import { CREATE_POST_MUTATION } from "../../api/graphQL/mutations/post";
+import {
+  CREATE_POST_MUTATION,
+  EDIT_POST_MUTATION,
+} from "../../api/graphQL/mutations/post";
 
 interface PostEditProps {
-  id?: number | null;
-  content?: string;
+  postId?: number | null;
+  initialContent?: string;
   closeModal: () => void;
-  refetchFeed: () => void;
+  refetchFeed?: () => void;
 }
 
 const PostEditor = ({
-  id = null,
-  content = "",
+  postId = null,
+  initialContent = "",
   closeModal,
   refetchFeed,
 }: PostEditProps) => {
-  const [postContent, setContent] = useState(content);
+  const [postContent, setContent] = useState(initialContent);
   const [createPost, { error, loading }] = useMutation(CREATE_POST_MUTATION);
+  const [updatePost, { error: updateError, loading: updateLoading }] =
+    useMutation(EDIT_POST_MUTATION);
 
-  const submitForm = async () => {
+  const makePost = async () => {
     await createPost({
       variables: { content: postContent },
     });
@@ -32,15 +37,54 @@ const PostEditor = ({
     if (!error && !loading) {
       setContent("");
       toast.success("Post created successfully.");
-      refetchFeed();
+      refetchFeed && refetchFeed();
       closeModal();
+      // Scroll up to the top to see freshly added Post.
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
   };
 
+  // TODO: Should this be a hook?
+  const editPost = async () => {
+    await updatePost({
+      variables: { id: postId, content: postContent },
+      update: (cache) => {
+        cache.modify({
+          fields: {
+            feed(existingFeed = { edges: [] }, { readField }) {
+              return {
+                edges: existingFeed.edges.map((edge: any) => {
+                  if (postId === readField("postId", edge.node)) {
+                    return {
+                      ...edge,
+                      node: {
+                        ...edge.node,
+                        content: postContent,
+                      },
+                    };
+                  }
+                  return edge;
+                }),
+              };
+            },
+          },
+        });
+      },
+    });
+
+    if (!updateError && !updateLoading) {
+      setContent("");
+      toast.success("Post modified successfully.");
+      refetchFeed && refetchFeed();
+      closeModal();
+    }
+  };
+
+  const submitForm = postId ? editPost : makePost;
+
   return (
     <Container className="content modal-content" maxWidth="sm">
-      <h1>{id ? "Edit a post" : "Create a post"}</h1>
+      <h1>{postId ? "Edit a post" : "Create a post"}</h1>
       <TextField
         fullWidth
         multiline
@@ -56,7 +100,7 @@ const PostEditor = ({
           <ImageIcon />
         </IconButton>
         <Button variant="contained" onClick={submitForm}>
-          {id ? "Edit" : "Post"}
+          {postId ? "Edit" : "Post"}
         </Button>
       </div>
       {/* TODO: loading component... */}
