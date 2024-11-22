@@ -1,15 +1,12 @@
 import "./posteditors.css";
 
 import { useState } from "react";
-import { Button, IconButton, Container, TextField } from "@mui/material";
-import ImageIcon from "@mui/icons-material/Image";
-import { useMutation } from "@apollo/client";
 import { toast } from "react-toastify";
+import ImageIcon from "@mui/icons-material/Image";
+import { Button, IconButton, Container, TextField } from "@mui/material";
 
-import {
-  CREATE_POST_MUTATION,
-  EDIT_POST_MUTATION,
-} from "../../api/graphQL/mutations/post";
+import useEditPost from "../../hooks/useEditPost";
+import useCreatePost from "../../hooks/useCreatePost";
 
 interface PostEditProps {
   postId?: number | null;
@@ -25,62 +22,36 @@ const PostEditor = ({
   refetchFeed,
 }: PostEditProps) => {
   const [postContent, setContent] = useState(initialContent);
-  const [createPost, { error, loading }] = useMutation(CREATE_POST_MUTATION);
-  const [updatePost, { error: updateError, loading: updateLoading }] =
-    useMutation(EDIT_POST_MUTATION);
+  const {
+    editPost,
+    error: updateError,
+    loading: updateLoading,
+  } = useEditPost();
+  const {
+    makePost,
+    error: createError,
+    loading: createLoading,
+  } = useCreatePost();
 
-  const makePost = async () => {
-    await createPost({
-      variables: { content: postContent },
-    });
+  const submitForm = async () => {
+    if (postId) {
+      await editPost(postId, postContent);
+    } else {
+      await makePost(postContent);
+    }
 
-    if (!error && !loading) {
+    if (!createError && !updateError && !createLoading && !updateLoading) {
       setContent("");
-      toast.success("Post created successfully.");
+      toast.success(`Post ${postId ? "updated" : "created"} successfully.`);
       refetchFeed && refetchFeed();
       closeModal();
+    }
+
+    if (!postId) {
       // Scroll up to the top to see freshly added Post.
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     }
   };
-
-  // TODO: Should this be a hook?
-  const editPost = async () => {
-    await updatePost({
-      variables: { id: postId, content: postContent },
-      update: (cache) => {
-        cache.modify({
-          fields: {
-            feed(existingFeed = { edges: [] }, { readField }) {
-              return {
-                edges: existingFeed.edges.map((edge: any) => {
-                  if (postId === readField("postId", edge.node)) {
-                    return {
-                      ...edge,
-                      node: {
-                        ...edge.node,
-                        content: postContent,
-                      },
-                    };
-                  }
-                  return edge;
-                }),
-              };
-            },
-          },
-        });
-      },
-    });
-
-    if (!updateError && !updateLoading) {
-      setContent("");
-      toast.success("Post modified successfully.");
-      refetchFeed && refetchFeed();
-      closeModal();
-    }
-  };
-
-  const submitForm = postId ? editPost : makePost;
 
   return (
     <Container className="content modal-content" maxWidth="sm">
@@ -104,7 +75,7 @@ const PostEditor = ({
         </Button>
       </div>
       {/* TODO: loading component... */}
-      {loading && <p>Loading...</p>}
+      {createLoading && <p>Loading...</p>}
     </Container>
   );
 };
