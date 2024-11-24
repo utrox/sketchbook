@@ -37,6 +37,10 @@ class AuthenticationViewsTests(TestCase):
         self.assertEqual(response.status_code, 400)  # Bad Request
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
+    def test_login_invalid_json(self):
+        response = self.client.post(reverse('login_view'), data='invalid json', content_type='application/json')
+        self.assertEqual(response.status_code, 400)  # Bad Request
+
     def test_login_missing_fields(self):
         response = self.client.post(
             reverse('login_view'),
@@ -53,18 +57,18 @@ class AuthenticationViewsTests(TestCase):
         self.assertEqual(response.url, '/')  # Redirects to home
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
-    def test_register_successful(self):
-        response = self.client.post(
-            reverse('register_view'),
-            data=json.dumps({'username': 'newuser', 'password': 'StrongP@ssw0rd'}),
-            content_type='application/json'
-        )
+    def test_logout_unauthenticated(self):
+        response = self.client.post(reverse('logout_view'))
         self.assertEqual(response.status_code, 302)  # Redirects on success
         self.assertEqual(response.url, '/')  # Redirects to home
-        self.assertTrue(User.objects.filter(username='newuser').exists())
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
 
     def test_register_empty_body(self):
         response = self.client.post(reverse('register_view'), data='', content_type='application/json')
+        self.assertEqual(response.status_code, 400)  # Bad Request
+
+    def test_register_invalid_json(self):
+        response = self.client.post(reverse('register_view'), data='invalid json', content_type='application/json')
         self.assertEqual(response.status_code, 400)  # Bad Request
 
     def test_register_missing_fields(self):
@@ -107,6 +111,13 @@ class AuthenticationViewsTests(TestCase):
         )
         self.assertEqual(response.status_code, 409)  # Conflict
 
-    def test_register_invalid_json(self):
-        response = self.client.post(reverse('register_view'), data='invalid json', content_type='application/json')
-        self.assertEqual(response.status_code, 400)  # Bad Request
+    def test_register_successful(self):
+        response = self.client.post(
+            reverse('register_view'),
+            data=json.dumps({'username': 'newuser', 'password': 'StrongP@ssw0rd'}),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 302)  # Redirects on success
+        self.assertEqual(response.url, '/')  # Redirects to home
+        self.assertTrue(User.objects.filter(username='newuser').exists())
+
