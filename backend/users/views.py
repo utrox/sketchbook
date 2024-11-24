@@ -17,7 +17,6 @@ from .utils import validate_password
 User = get_user_model()
 
 
-# TODO: write tests for the authentication views
 @require_POST
 def login_view(request):
     if not request.body:
