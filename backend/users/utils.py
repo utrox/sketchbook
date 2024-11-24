@@ -7,7 +7,11 @@ from django.core.exceptions import ValidationError
 
 def validate_password(password):
     """Run validators on a password and return a list of errors."""
-    validators = [MinimumLengthValidator, NumericPasswordValidator, CommonPasswordValidator]
+    validators = [
+        MinimumLengthValidator,
+        NumericPasswordValidator,
+        CommonPasswordValidator,
+    ]
     errors = []
     
     for validator in validators:
