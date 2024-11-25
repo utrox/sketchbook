@@ -28,6 +28,19 @@ class PostMutationTests(GraphQLTestCase):
         self.assertResponseHasErrors(response)
         self.assertIn("You must be logged in to create a post.", content['errors'][0]['message'])
 
+    def test_create_post_empty_content(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.query(
+            CREATE_POST,
+            variables={'content': ""},
+        )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        self.assertIn("This field cannot be blank.", content['errors'][0]['message'])
+
     def test_create_post_successfully(self):
         self.client.login(username='testuser', password='testpassword')
         response = self.query(
