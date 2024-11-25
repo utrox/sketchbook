@@ -37,7 +37,6 @@ class UpdatePost(graphene.Mutation):
         if not info.context.user.is_authenticated or post.user != info.context.user:
             return False
 
-
     def mutate(self, info, id, post_data):
         try:
             post = Post.objects.get(pk=id)
