@@ -50,7 +50,7 @@ class UpdatePost(graphene.Mutation):
             post.save()
             return UpdatePost(post=post)
         except Post.DoesNotExist:
-            raise Exception("Post not found")
+            raise Exception("Post does not exist.")
 
 
 class DeletePost(graphene.Mutation):
@@ -69,4 +69,4 @@ class DeletePost(graphene.Mutation):
             post.delete()
             return DeletePost(ok=True)
         except Post.DoesNotExist:
-            raise Exception("Post not found.")
+            raise Exception("Post does not exist.")

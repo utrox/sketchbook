@@ -4,12 +4,15 @@ from graphene import relay
 from .models import Comment
 from .types import CommentConnection
 from .mutations import CreateComment, UpdateComment, DeleteComment
-
+from posts.models import Post
 
 class Query(graphene.ObjectType):
     all_comments_for_post = relay.ConnectionField(CommentConnection, post_id=graphene.ID(required=True))
 
     def resolve_all_comments_for_post(root, info, **kwargs):
+        if not Post.objects.filter(pk=kwargs['post_id']).exists():
+            raise Exception("Post does not exist.")
+
         return Comment.objects.filter(post_id=kwargs['post_id']).order_by('-created_at')
 
 

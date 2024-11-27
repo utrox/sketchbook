@@ -41,6 +41,32 @@ class PostMutationTests(GraphQLTestCase):
         self.assertResponseHasErrors(response)
         self.assertIn("This field cannot be blank.", content['errors'][0]['message'])
 
+    def test_create_post_too_long(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.query(
+            CREATE_POST,
+            variables={'content': "a" * 281},
+        )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        self.assertIn("Ensure this value has at most 280 characters (it has 281).", content['errors'][0]['message'])
+
+    def test_create_post_too_short(self):
+        self.client.login(username='testuser', password='testpassword')
+        response = self.query(
+            CREATE_POST,
+            variables={'content': "a" * 2},
+        )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        self.assertIn("Ensure this value has at least 3 characters (it has 2).", content['errors'][0]['message'])
+
     def test_create_post_successfully(self):
         self.client.login(username='testuser', password='testpassword')
         response = self.query(
@@ -107,7 +133,46 @@ class PostMutationTests(GraphQLTestCase):
 
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
-        self.assertIn("Post not found", content['errors'][0]['message'])
+        self.assertIn("Post does not exist.", content['errors'][0]['message'])
+
+    def test_update_post_empty_content(self):
+        self.client.login(username='testuser2', password='testpassword2')
+        response = self.query(
+            UPDATE_POST,
+            variables={'id': self.post.id, 'content': ""},
+        )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        self.assertIn("This field cannot be blank.", content['errors'][0]['message'])
+
+    def test_update_post_too_long(self):
+        self.client.login(username='testuser2', password='testpassword2')
+        response = self.query(
+            UPDATE_POST,
+            variables={'id': self.post.id, 'content': "a" * 281},
+        )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        self.assertIn("Ensure this value has at most 280 characters (it has 281).", content['errors'][0]['message'])
+
+    def test_update_post_too_short(self):
+        self.client.login(username='testuser2', password='testpassword2')
+        response = self.query(
+            UPDATE_POST,
+            variables={'id': self.post.id, 'content': "a" * 2},
+        )
+
+        content = json.loads(response.content)
+
+        # This validates the status code and if you get errors
+        self.assertResponseHasErrors(response)
+        self.assertIn("Ensure this value has at least 3 characters (it has 2).", content['errors'][0]['message'])
 
     def test_delete_post_unauthenticated(self):
         response = self.query(
@@ -159,4 +224,4 @@ class PostMutationTests(GraphQLTestCase):
 
         # This validates the status code and if you get errors
         self.assertResponseHasErrors(response)
-        self.assertIn("Post not found", content['errors'][0]['message'])
+        self.assertIn("Post does not exist.", content['errors'][0]['message'])
