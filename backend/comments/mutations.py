@@ -1,24 +1,25 @@
 import graphene
+
 from .models import Comment
 from .types import CommentNode
-
-
-class CommentInput(graphene.InputObjectType):
-    post_id = graphene.ID(required=True)
-    content = graphene.String(required=True)
+from posts.models import Post
 
 
 class CreateComment(graphene.Mutation):
     class Arguments:
-        input = CommentInput(required=True)
+        post_id = graphene.ID(required=True)
+        content = graphene.String(required=True)
 
     comment = graphene.Field(CommentNode)
 
-    def mutate(self, info, input=None):
+    def mutate(self, info, post_id, content):
         if not info.context.user.is_authenticated:
             raise Exception("You must be logged in to create a comment.")
         
-        comment = Comment(content=input.content, post_id=input.post_id, user=info.context.user)
+        if not Post.objects.filter(pk=post_id).exists():
+            raise Exception("Post does not exist.")
+
+        comment = Comment(content=content, post_id=post_id, user=info.context.user)
         comment.full_clean()
         comment.save()
         return CreateComment(comment=comment)
@@ -26,29 +27,29 @@ class CreateComment(graphene.Mutation):
 
 class UpdateComment(graphene.Mutation):
     class Arguments:
-        id = graphene.Int(required=True)
-        input = CommentInput(required=True)
+        id = graphene.ID(required=True)
+        content = graphene.String(required=True)
 
     comment = graphene.Field(CommentNode)
 
-    def mutate(self, info, id, input):
+    def mutate(self, info, id, content):
         try:
             comment = Comment.objects.get(pk=id)
 
             if not comment.can_edit(info.context.user):
                 raise Exception("You are not authorized to edit this comment.")
 
-            comment.content = input.content
+            comment.content = content
             comment.save()
 
             return UpdateComment(comment=comment)
         except Comment.DoesNotExist:
-            raise Exception(f"Comment not found by id {id}.")
+            raise Exception(f"Comment does not exist.")
 
 
 class DeleteComment(graphene.Mutation):
     class Arguments:
-        id = graphene.Int(required=True)
+        id = graphene.ID(required=True)
 
     ok = graphene.Boolean()
 
@@ -62,5 +63,5 @@ class DeleteComment(graphene.Mutation):
             comment.delete()
             return DeleteComment(ok=True)
         except Comment.DoesNotExist:
-            raise Exception(f"Comment not found by id {id}.")
+            raise Exception(f"Comment does not exist.")
 

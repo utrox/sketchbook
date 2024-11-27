@@ -27,7 +27,7 @@ class ToggleCommentLike(graphene.Mutation):
         try:
             comment = Comment.objects.get(pk=comment_id)
         except Comment.DoesNotExist:
-            raise Exception("Comment not found.")
+            raise Exception("Comment does not exist.")
 
         try:
             like = CommentLike.objects.get(user_id=user.pk, comment_id=comment_id)
@@ -59,7 +59,7 @@ class TogglePostLike(graphene.Mutation):
         try:
             post = Post.objects.get(pk=post_id)
         except Post.DoesNotExist:
-            raise Exception("Post not found.")
+            raise Exception("Post does not exis.")
         
         try:
             like = PostLike.objects.get(user_id=user.pk, post_id=post_id)
