@@ -59,7 +59,7 @@ class TogglePostLike(graphene.Mutation):
         try:
             post = Post.objects.get(pk=post_id)
         except Post.DoesNotExist:
-            raise Exception("Post does not exis.")
+            raise Exception("Post does not exist.")
         
         try:
             like = PostLike.objects.get(user_id=user.pk, post_id=post_id)
