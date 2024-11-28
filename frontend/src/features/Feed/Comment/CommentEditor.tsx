@@ -1,46 +1,74 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
+
+import { toast } from "react-toastify";
 import SendIcon from "@mui/icons-material/Send";
 import { Button, TextField } from "@mui/material";
-import { toast } from "react-toastify";
 
-import { CREATE_COMMENT_MUTATION } from "../../../api/graphQL/mutations/comment";
+import { useEditComment } from "../../../hooks/useEditComment";
+import useCreateComment from "../../../hooks/useCreateComment";
 
-interface CommentEditorProps {
+interface CommentEditorPropsCreate {
   postId: number;
-  commentId?: string;
-  refetchComments: () => void;
+  commentId?: never;
+  initialContent?: never;
+  closeModal?: () => void;
+  refetchComments?: () => void;
+}
+
+interface CommentEditorPropsUpdate {
+  postId?: never;
+  commentId: number;
+  initialContent: string;
+  closeModal?: () => void;
+  refetchComments?: () => void;
 }
 
 const CommentEditor = ({
   postId,
   commentId,
+  initialContent,
+  closeModal,
   refetchComments,
-}: CommentEditorProps) => {
-  const [commentContent, setCommentContent] = useState("");
-  const [createComment, { error, loading }] = useMutation(
-    CREATE_COMMENT_MUTATION
+}: CommentEditorPropsCreate | CommentEditorPropsUpdate) => {
+  const [commentContent, setCommentContent] = useState<string>(
+    initialContent || ""
   );
 
-  const onSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    if (postId && commentContent) {
-      await createComment({
-        variables: { postId: postId, content: commentContent },
-      });
+  const {
+    editComment,
+    error: updateError,
+    loading: updateLoading,
+  } = useEditComment();
+  const {
+    makeComment,
+    error: createError,
+    loading: createLoading,
+  } = useCreateComment();
 
-      /*
-      TODO: when adding a comment, the comment Counter of the Post is not updated after the next 15 second interval's request does not update it.
-      Maybe make a hook to update the feed data?
-      */
-      if (!error && !loading) {
-        setCommentContent("");
-        toast.success("Comment created successfully.");
-        refetchComments();
-        /* TODO: after commenting, scroll up to see the newly added comment */
-      }
+  /*
+  TODO: when adding or removing a comment, the comment counter of the Post is 
+  not updated. It gets updated only when the the next 15 second interval's request polls the data.
+  Maybe make a hook to update the feed data? Or maybe add/subtract the comment count in the cache?
+  */
+  const submitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (commentId) {
+      await editComment(commentId, commentContent);
+    } else if (postId) {
+      await makeComment(postId, commentContent);
+    } else {
+      toast.error("No post ID and no comment ID provided.");
+    }
+
+    if (!updateError && !createError && !createLoading && !updateLoading) {
+      setCommentContent("");
+      toast.success("Comment created successfully.");
+      refetchComments && refetchComments();
+      /* TODO: after commenting, scroll up to see the newly added comment, using ref? */
+      closeModal && closeModal();
     }
   };
+
   return (
     <div className="comment-editor">
       <TextField
@@ -52,8 +80,7 @@ const CommentEditor = ({
         value={commentContent}
         onChange={(e) => setCommentContent(e.target.value)}
       />
-      {/* TOOD: When clicking this button, post the comment. */}
-      <Button onClick={(e) => onSubmit(e)}>
+      <Button onClick={(e) => submitForm(e)}>
         <SendIcon />
       </Button>
     </div>

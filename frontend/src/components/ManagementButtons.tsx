@@ -19,7 +19,7 @@ const ManagementButtons = ({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   return (
-    <div className="management-btns" style={{ marginLeft: "auto" }}>
+    <div className="management-btns">
       <IconButton aria-label="Edit" onClick={onEdit}>
         <EditIcon />
       </IconButton>

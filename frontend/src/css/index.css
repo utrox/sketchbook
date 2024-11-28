@@ -141,3 +141,13 @@ a {
   max-height: 90vh;
   overflow-y: auto;
 }
+
+.bottom-bar {
+  display: flex;
+  align-items: center;
+}
+
+.management-btns {
+  margin-left: auto;
+  margin-right: 0.25rem;
+}

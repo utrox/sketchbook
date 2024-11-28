@@ -1,5 +1,3 @@
-import "./post.css";
-
 // Lib imports
 import { useState } from "react";
 import { Modal } from "@mui/material";

@@ -12,6 +12,7 @@ export const GET_COMMENTS_FOR_POST = gql`
           createdAt
           updatedAt
           user {
+            id
             username
             avatar
           }

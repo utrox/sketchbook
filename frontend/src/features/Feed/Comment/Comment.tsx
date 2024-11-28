@@ -1,8 +1,16 @@
-import { Divider } from "@mui/material";
+import { useState } from "react";
+import { Divider, Modal, Container } from "@mui/material";
 
+// Hooks
+import { useAuth } from "../../../hooks/useAuth";
 import { graphqlIdToNumericId } from "../../../utils";
-import PostCommentHeader from "../../../components/PostCommentHeader";
+import { useDeleteComment } from "../../../hooks/useDeleteComment";
+
+// Components
+import CommentEditor from "./CommentEditor";
 import LikeButton from "../Like/LikeButton";
+import PostCommentHeader from "../../../components/PostCommentHeader";
+import ManagementButtons from "../../../components/ManagementButtons";
 
 export interface CommentProps {
   id: string;
@@ -12,6 +20,7 @@ export interface CommentProps {
   createdAt: string;
   updatedAt: string;
   user: {
+    id: string;
     username: string;
     avatar: string;
   };
@@ -20,6 +29,12 @@ export interface CommentProps {
 
 const Comment = (props: CommentProps) => {
   const commentNumericId = Number.parseInt(graphqlIdToNumericId(props.id));
+
+  const { user, loading } = useAuth();
+  const [isCommentEditorOpen, setIsCommentEditorOpen] = useState(false);
+
+  const { deleteComment } = useDeleteComment(commentNumericId);
+
   return (
     <>
       <div ref={props.innerRef}>
@@ -29,11 +44,38 @@ const Comment = (props: CommentProps) => {
           updatedAt={props.updatedAt}
         />
         <p>{props.content}</p>
-        <LikeButton
-          commentId={commentNumericId}
-          likeCount={props.likeCount}
-          liked={props.likedByUser}
-        />
+        <div className="bottom-bar">
+          <LikeButton
+            commentId={commentNumericId}
+            likeCount={props.likeCount}
+            liked={props.likedByUser}
+          />
+          {!loading && props.user.id == user.id && (
+            <>
+              <ManagementButtons
+                onEdit={() => setIsCommentEditorOpen(true)}
+                onDelete={deleteComment}
+                entityType="comment"
+              />
+              <Modal
+                open={isCommentEditorOpen}
+                onClose={() => setIsCommentEditorOpen(false)}
+              >
+                <Container
+                  className="content modal-content post-editor"
+                  maxWidth="sm"
+                >
+                  <h1>Edit comment</h1>
+                  <CommentEditor
+                    commentId={commentNumericId}
+                    closeModal={() => setIsCommentEditorOpen(false)}
+                    initialContent={props.content}
+                  />
+                </Container>
+              </Modal>
+            </>
+          )}
+        </div>
       </div>
       <Divider variant="middle" />
     </>
