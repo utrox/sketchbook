@@ -4,15 +4,18 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import ImageIcon from "@mui/icons-material/Image";
 import { Button, IconButton, Container, TextField } from "@mui/material";
+import { useParams, useLocation } from "react-router-dom";
 
 import useEditPost from "../../hooks/useEditPost";
 import useCreatePost from "../../hooks/useCreatePost";
+import useQueryFeed from "../../hooks/useQueryFeed";
+import useQueryPostHistory from "../../hooks/useQueryPostHistory";
 
 interface PostEditProps {
   postId?: number | null;
   initialContent?: string;
   closeModal: () => void;
-  refetchFeed?: () => void;
+  refetchFeed?: boolean;
 }
 
 const PostEditor = ({
@@ -33,6 +36,14 @@ const PostEditor = ({
     loading: createLoading,
   } = useCreatePost();
 
+  const { pathname } = useLocation();
+  const { username } = useParams();
+
+  const isProfileEditor = pathname.includes("profile");
+  let refetch = isProfileEditor
+    ? useQueryPostHistory(username || "").refetch
+    : useQueryFeed().refetch;
+
   const submitForm = async () => {
     if (postId) {
       await editPost(postId, postContent);
@@ -43,7 +54,7 @@ const PostEditor = ({
     if (!createError && !updateError && !createLoading && !updateLoading) {
       setContent("");
       toast.success(`Post ${postId ? "updated" : "created"} successfully.`);
-      refetchFeed && refetchFeed();
+      refetchFeed && refetch();
       closeModal();
     }
 

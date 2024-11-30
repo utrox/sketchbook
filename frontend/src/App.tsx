@@ -4,6 +4,7 @@ import { Feed } from "./features/Feed/Feed.tsx";
 import { Login } from "./features/authentication/Login.tsx";
 import { Register } from "./features/authentication/Register.tsx";
 import { PrivateRoute } from "./components/PrivateRoute.tsx";
+import Userprofile from "./features/Userprofile/Userprofile.tsx";
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
         {/* Routes protected with authentication */}
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Feed />} />
-          <Route path="/profile/:username" element={<h1>Userprofile</h1>} />
+          <Route path="/profile/:username" element={<Userprofile />} />
           <Route path="*" element={<h1>404 does not exist</h1>} />
         </Route>
       </Routes>

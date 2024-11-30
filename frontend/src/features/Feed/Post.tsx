@@ -72,6 +72,7 @@ const Post = (props: PostData) => {
                 postId={postNumericId}
                 closeModal={() => setIsPostEditorOpen(false)}
                 initialContent={props.content}
+                refetchFeed
               />
             </Modal>
           </>

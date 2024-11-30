@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Avatar, TextField } from "@mui/material";
 
 interface FakePostEditorProps {
-  onClick: React.MouseEventHandler<HTMLDivElement>; //TODO: change type
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 }
 
 const FakePostEditor = ({ onClick }: FakePostEditorProps) => {

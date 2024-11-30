@@ -7,12 +7,12 @@ from .models import User
 class UserType(DjangoObjectType):
     class Meta:
         model = User
-        fields = ("id", "username", "avatar", "last_login", "date_joined")
+        fields = ("id", "username", "avatar", "background", "last_login", "created_at")
 
 
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
-    user_profile = graphene.Field(UserType, id=graphene.ID(required=True))
+    user_profile = graphene.Field(UserType, username=graphene.String(required=True))
 
     # TOOD: on the development server this will return the default
     # user, so that I dont have to log in every time I restart the server
@@ -26,5 +26,5 @@ class Query(graphene.ObjectType):
         
         return None
     
-    def resolve_user_profile(root, info, id):
-        return User.objects.get(id=id)
+    def resolve_user_profile(root, info, username):
+        return User.objects.get(username=username)

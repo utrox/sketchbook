@@ -57,7 +57,6 @@
     .login-leftSide,
     .register-rightSide {
       --image-gradient: rgb(0, 0, 0, 0.5);
-      /* TODO: save this image to local */
       background: linear-gradient(var(--image-gradient), var(--image-gradient)),
         var(--img-url);
       background-size: cover;

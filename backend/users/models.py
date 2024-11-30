@@ -3,12 +3,9 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    avatar = models.ImageField(upload_to='images/avatars')
-
-    def save(self, *args, **kwargs):
-        if not self.avatar:
-            self.avatar = 'images/avatars/default.png'
-        super(User, self).save(*args, **kwargs)
+    avatar = models.ImageField(upload_to='images/avatars', default='images/avatars/default.png')
+    background = models.ImageField(upload_to='images/backgrounds', default='images/backgrounds/default.png')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username
