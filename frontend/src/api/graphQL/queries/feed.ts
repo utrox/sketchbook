@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const GET_FEED_DATA = gql`
-  query GetFeed($first: Int, $after: String) {
-    feed(first: $first, after: $after) {
+  query GetFeed($first: Int, $after: String, $before: String) {
+    feed(first: $first, after: $after, before: $before) {
       edges {
         node {
           id
@@ -23,6 +23,7 @@ export const GET_FEED_DATA = gql`
       pageInfo {
         hasNextPage
         endCursor
+        startCursor
       }
     }
   }

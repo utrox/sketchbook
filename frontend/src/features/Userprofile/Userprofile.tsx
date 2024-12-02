@@ -12,7 +12,7 @@ import useQueryUserProfileData from "../../hooks/useUserProfileData";
 // Components
 import Navbar from "../../features/Navbar/Navbar";
 import PostHistory from "./PostHistory";
-// import ProfileEditor from "./ProfileEditor";
+import ProfileEditor from "./ProfileEditor";
 
 const Userprofile = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -43,11 +43,8 @@ const Userprofile = () => {
               style={{
                 background: `
       linear-gradient(var(--image-gradient), var(--image-gradient)),
-      url(http://127.0.0.1:8000/${data.userProfile.background})
+      url(http://127.0.0.1:8000/${data.userProfile.background}) no-repeat center center / cover
     `,
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center",
-                backgroundSize: "cover",
               }}
             ></div>
             <div className="profile-data">
@@ -71,14 +68,10 @@ const Userprofile = () => {
                   <Button onClick={() => setIsProfileEditorOpen(true)}>
                     <EditButton />
                   </Button>
-                  <Modal
-                    open={isProfileEditorOpen}
-                    onClose={() => setIsProfileEditorOpen(false)}
-                  >
-                    <div>Profile editor!</div>
-                    {/* TODO: <ProfileEditor
+                  <Modal open={isProfileEditorOpen}>
+                    <ProfileEditor
                       closeModal={() => setIsProfileEditorOpen(false)}
-                    /> */}
+                    />
                   </Modal>
                 </>
               ) : (
@@ -100,6 +93,10 @@ const Userprofile = () => {
             </Tabs>
             <Container className="userprofile-content" maxWidth="sm">
               {tabIndex === 0 && <PostHistory />}
+              {/* 
+              TODO: implement only showing only photos in a grid-like structure, 
+              if they click on it, show the original post in a modal 
+              */}
               {tabIndex === 1 && <div>PHOTOS</div>}
               {tabIndex === 2 && <div>CONNECTIONS</div>}
             </Container>

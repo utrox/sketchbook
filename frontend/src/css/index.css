@@ -101,6 +101,13 @@ a {
     transform: translate(-50%, -50%);
     padding: 2rem;
     gap: 1rem;
+    overflow-y: auto;
+    max-height: 90vh;
+
+    @media screen and (max-width: 600px) {
+      max-height: 100vh;     
+       
+    }
 
     h1 {
       font-size: 1.25rem;
@@ -114,6 +121,10 @@ a {
       }
     }
   }
+}
+
+.MuiAvatar-circular {
+  background-color: white;
 }
 
 .MuiAvatar-img:hover {
