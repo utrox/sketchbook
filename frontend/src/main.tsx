@@ -8,6 +8,8 @@ import {
   ApolloProvider,
   InMemoryCache,
 } from "@apollo/client";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+
 import { onError } from "@apollo/client/link/error";
 
 import { ToastContainer, toast } from "react-toastify";
@@ -17,25 +19,30 @@ import App from "./App.tsx";
 import "bootstrap/dist/css/bootstrap.css";
 import "./css/index.css";
 
+// Error-handler, when the grapQL API returns an error,
+// we're going to display the user-friendly message to the user
+// in a toast and log the details to the console.
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
-    graphQLErrors.map(({ message, locations, path }) =>
-      toast.error(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
-    );
+    graphQLErrors.map(({ message, locations, path }) => {
+      console.error(`[GraphQL error]: Message: ${message}`);
+      console.error(`Path: ${path}`);
+      console.error(`Location: ${locations}`);
+      toast.error(`[GraphQL error]: Message: ${message}`);
+    });
 
   if (networkError) toast.error(`[Network error]: ${networkError}`);
 });
 
-const link = from([
-  errorLink,
+const uploadLink = createUploadLink({
   // TODO: read URL from env variable
-  new HttpLink({ uri: "http://localhost:8000/graphql" }),
-]);
+  uri: "http://localhost:8000/graphql",
+});
+
+const link = from([errorLink, uploadLink]);
 
 const client = new ApolloClient({
-  link: link,
+  link,
   cache: new InMemoryCache(),
 });
 

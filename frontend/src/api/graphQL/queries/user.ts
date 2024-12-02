@@ -1,8 +1,20 @@
 import { gql } from "@apollo/client";
 
-export const GET_FEED_DATA = gql`
-  query GetFeed($first: Int, $after: String, $before: String) {
-    feed(first: $first, after: $after, before: $before) {
+export const GET_USER_DATA = gql`
+  query GetUser($username: String!) {
+    userProfile(username: $username) {
+      id
+      username
+      background
+      avatar
+      createdAt
+    }
+  }
+`;
+
+export const GET_USER_POST_HISTORY = gql`
+  query GetUserPostHistory($username: String!, $after: String, $first: Int) {
+    postHistory(username: $username, after: $after, first: $first) {
       edges {
         node {
           id
@@ -23,7 +35,6 @@ export const GET_FEED_DATA = gql`
       pageInfo {
         hasNextPage
         endCursor
-        startCursor
       }
     }
   }

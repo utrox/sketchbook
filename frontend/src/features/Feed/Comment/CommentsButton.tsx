@@ -10,7 +10,6 @@ interface CommentsButtonProps {
   commentCount: number;
 }
 
-/* TODO: maybe rename it? It's not really a button, but kinda is? */
 const CommentsButton = ({ postId, commentCount }: CommentsButtonProps) => {
   const [commentsModalOpen, setCommentsModalOpen] = useState(false);
   const openModal = () => setCommentsModalOpen(true);

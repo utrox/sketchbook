@@ -22,7 +22,7 @@ export function Feed() {
   };
   const handleClose = () => setPostEditorOpen(false);
 
-  const { data, loading, loadMoreItems, refetch } = useQueryFeed();
+  const { data, loading, loadMoreItems } = useQueryFeed();
 
   useEffect(() => {
     if (data) {
@@ -38,7 +38,7 @@ export function Feed() {
       <Container className="content" maxWidth="sm">
         <FakePostEditor onClick={(e) => handleOpen(e)} />
         <Modal open={postEditorOpen} onClose={handleClose}>
-          <PostEditor closeModal={handleClose} refetchFeed={refetch} />
+          <PostEditor closeModal={handleClose} refetchFeed={true} />
         </Modal>
         <div className="posts">
           <InfiniteScroll

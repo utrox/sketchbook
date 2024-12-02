@@ -293,5 +293,5 @@ dist
 .pnp.*
 
 
-backend/images/*
+backend/uploads/images/*
 notes.txt

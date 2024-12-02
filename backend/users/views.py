@@ -11,7 +11,7 @@ from core.exceptions import (
     UnauthorizedException,
     ConflictException
 )
-from .utils import validate_password
+from .validators import validate_password
 
 
 User = get_user_model()

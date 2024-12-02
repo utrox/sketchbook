@@ -14,6 +14,13 @@ export const useDeletePost = (postId: number) => {
               ),
             };
           },
+          postHistory(existingPostHistory = { edges: [] }, { readField }) {
+            return {
+              edges: existingPostHistory.edges.filter(
+                (edge: any) => postId !== readField("id", edge.node)
+              ),
+            };
+          },
         },
       });
     },

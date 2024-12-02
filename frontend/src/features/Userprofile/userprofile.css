@@ -1,0 +1,87 @@
+.userprofile-content {
+    min-height: 80vh;
+    background-color: white;
+    padding: 0 !important;
+
+    .profile-header {
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: #464646;
+        --image-gradient: rgb(0, 0, 0, 0.2);
+        background: linear-gradient(var(--image-gradient), var(--image-gradient));
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .profile-data {
+        display: flex;
+        flex-direction: row;
+        .userdata {
+          margin: 1rem;
+        }
+
+        button {
+            height: fit-content;
+            width: fit-content;
+            margin: auto;
+            margin-right: 0;
+        }
+    }
+
+    .profile-avatar {
+        width: 125px;
+        height: 125px;
+        border-radius: 100%;
+        border: 5px solid white;
+        margin-top: -62px;
+        margin-left: 20px;
+    }
+}
+
+.wrong-input-helper {
+    color: darkred !important;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    height: 1.25rem;
+}
+
+.posts.history > *{
+    border: 1px solid grey;
+    border-radius: 0.25rem;
+    padding-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    padding: 1rem;
+    position: relative;
+    z-index: 3;
+    background-color: white !important;
+    -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2),
+      0px 0px 6px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2),
+      0px 0px 6px rgba(0, 0, 0, 0.2);
+    -ms-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2),
+      0px 0px 6px rgba(0, 0, 0, 0.2);
+    -o-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2),
+      0px 0px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2), 0px 0px 6px rgba(0, 0, 0, 0.2);
+    border-radius: 0.25rem;
+}
+
+@media screen and (max-width: 480px) {
+    .userprofile-content {
+        .profile-avatar {
+            margin: auto;
+            margin-top: -62px;
+        }
+        .profile-data {
+            flex-direction: column;
+            .userdata {
+                margin: 0.5rem;
+
+                h1 {
+                    text-align: center;
+                }
+            }
+        }
+    }
+}
