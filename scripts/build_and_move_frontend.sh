@@ -4,9 +4,12 @@ set -o errexit
 
 # Save the current directory
 original_path=$(pwd)
+script_dir=$(dirname "$(realpath "$0")")
+
 dist_folder="dist"
 destination="../backend/client"
 
+cd "$script_dir"
 cd ../frontend
 
 echo "🏗️ Installing node packages"
@@ -24,8 +27,8 @@ else
 fi
 
 echo "📦 Moving build files to backend client folder..."
-mkdir -p "$destination"
 rm -rf "$destination" # Clean destination folder
+mkdir -p "$destination"
 mv "$dist_folder"/* "$destination/"
 
 echo "🔥 Frontend build files moved successfully."
