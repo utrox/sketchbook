@@ -6,15 +6,15 @@ original_path=$(pwd)
 cd ../backend
 
 echo "📦 Installing Python dependencies from requirements.txt..."
-pip install -r ./backend/requirements.txt
+pip install -r ./requirements.txt
 
 # Convert static asset files
 echo "📋 Colleting static files..."
-python ./backend/manage.py collectstatic --no-input
+python ./manage.py collectstatic --no-input
 
 # Apply any outstanding database migrations
 echo "⚙️ Applying database migrations..."
-python ./backend/manage.py migrate
+python ./manage.py migrate
 
 echo "✅ Backend built successfully! 🎉"
 
