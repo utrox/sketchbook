@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-egrffn)4cn43j)l9y1ap&6v@@yrfx!0@c(m=en@rl55ebmdm4n'
+SECRET_KEY = os.environ.get('SKTCH_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('SKTCH_DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('SKTCH_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -94,6 +95,10 @@ if DEBUG:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+
+# Render.com: Django settings for databases
+
 else:
     import dj_database_url
     DATABASES = {
@@ -150,16 +155,19 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
 ]
 
+# Settings for paths
+
 MEDIA_ROOT = BASE_DIR / 'uploads'
 MEDIA_IMAGES_ROOT = MEDIA_ROOT / 'images'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024  # 10 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024   # 5 MB
 
-REACT_APP_BUILD_PATH= BASE_DIR / "client" 
 
+REACT_APP_BUILD_PATH= BASE_DIR / "client" 
 STATICFILES_DIRS = [
     REACT_APP_BUILD_PATH,
 ]
+
 
 # Add mimetypes for css and js files, otherwise in production the following 
 # error will be raised by the browser:
@@ -173,9 +181,8 @@ mimetypes.add_type("text/javascript", ".js", True)
 
 # Render.com: Django settings for static assets
 # This production code might break development mode, so we check whether we're in DEBUG mode
-#if not DEBUG:    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
-import os
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
-# and renames the files with unique names for each version to support long-term caching
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if not DEBUG: # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
+    # and renames the files with unique names for each version to support long-term caching
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
