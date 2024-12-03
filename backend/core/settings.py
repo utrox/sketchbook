@@ -143,5 +143,23 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 MEDIA_ROOT = BASE_DIR / 'uploads'
+MEDIA_IMAGES_ROOT = MEDIA_ROOT / 'images'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024  # 10 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024   # 5 MB
+
+REACT_APP_BUILD_PATH= BASE_DIR / "client" 
+STATIC_URL = "django_static/"
+
+STATICFILES_DIRS = [
+    REACT_APP_BUILD_PATH,
+]
+
+# Add mimetypes for css and js files, otherwise in production the following 
+# error will be raised by the browser:
+# Failed to load module script: Expected a JavaScript module script but the server 
+# responded with a MIME type of "text/html". 
+# Strict MIME type checking is enforced for module scripts per HTML spec.
+import mimetypes
+
+mimetypes.add_type("text/css", ".css", True)
+mimetypes.add_type("text/javascript", ".js", True)

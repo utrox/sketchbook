@@ -22,8 +22,7 @@ const Liker = (props: LikerProps) => {
         <ListItemButton onClick={() => {}}>
           <ListItemAvatar>
             <Avatar
-              /* TODO: user avatar */
-              src={`http://127.0.0.1:8000/${props.user.avatar}`}
+              src={`${import.meta.env.VITE_BACKEND_URL}/${props.user.avatar}`}
               alt={props.user.username}
             />
           </ListItemAvatar>

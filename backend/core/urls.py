@@ -15,18 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import path, include, re_path
 from graphene_file_upload.django import FileUploadGraphQLView
 
 from .schema import schema
-
+from .views import serve_react, serve_media_images
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('graphql', FileUploadGraphQLView.as_view(graphiql=True, schema=schema)),
     path('auth/', include('users.urls')),
+    # Serve media files
+    re_path(r"^images/(?P<path>.*)$", serve_media_images, {"document_root": settings.MEDIA_IMAGES_ROOT}),
+    re_path(r"^(?P<path>.*)$", serve_react, {"document_root": settings.REACT_APP_BUILD_PATH}),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Serve media files securely in dev
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
