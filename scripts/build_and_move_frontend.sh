@@ -7,9 +7,12 @@ original_path=$(pwd)
 dist_folder="dist"
 destination="../backend/client"
 
-echo "🖼️ Starting build process for React application..."
 cd ../frontend
 
+echo "🏗️ Installing node packages"
+npm install
+
+echo "🖼️ Starting build process for React application..."
 npm run build
 
 if [ $? -eq 0 ]; then
