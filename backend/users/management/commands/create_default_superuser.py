@@ -11,11 +11,11 @@ class Command(BaseCommand):
     With this command we can create a default superuser
     based on the environment variables.
     """
+    help = "Create a default superuser if not exists. Values are based on environment variables."
 
     def handle(self, *args, **options):
-        super(Command, self).handle(*args, **options)
         self.stdout.write("Creating default superuser if not exists...")
-        username = os.environ.get("SKTCH_ADMIN_USERNAME"), 
+        username = os.environ.get("SKTCH_ADMIN_USERNAME") 
         password = os.environ.get("SKTCH_ADMIN_PASSWORD")
         if not User.objects.filter(username=username).exists():
             User.objects.create_superuser(username, password)
