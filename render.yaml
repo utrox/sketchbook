@@ -9,7 +9,7 @@ services:
     plan: free
     name: core
     runtime: python
-    buildCommand: "./scripts/build_backend.sh && ./scripts/build_and_move_frontend.sh"
+    buildCommand: "./scripts/build.sh"
     startCommand: "./scripts/run_server.sh"   
     envVars:
       - key: DATABASE_URL
