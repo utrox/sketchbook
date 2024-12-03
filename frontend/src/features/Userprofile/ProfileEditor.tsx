@@ -13,7 +13,7 @@ import {
 import ImageUploader from "../ImageUpload/ImageUploader";
 import ConfirmationDialog from "../../components/ConfirmationDialog";
 
-import useQueryUserProfileData from "../../hooks/useUserProfileData";
+import useQueryUserProfileData from "../../hooks/useQueryUserProfileData";
 import useEditUserProfileData from "../../hooks/useEditUserProfileData";
 import { toast } from "react-toastify";
 
@@ -130,9 +130,10 @@ const ProfileEditor = ({ closeModal }: ProfileEditorProps) => {
         label="Avatar"
         images={avatarInput}
         setImages={setAvatarInput}
-        /* TODO: replace with normal URL */
         placeholderImage={{
-          data_url: `http://localhost:8000/${data.userProfile.avatar}`,
+          data_url: `${import.meta.env.VITE_BACKEND_URL}/${
+            data.userProfile.avatar
+          }`,
         }}
         key={`avatar-${data.userProfile.username}`}
       />
@@ -140,9 +141,10 @@ const ProfileEditor = ({ closeModal }: ProfileEditorProps) => {
         label="Profile background"
         images={backgroundInput}
         setImages={setBackgroundInput}
-        /* TODO: replace with normal URL */
         placeholderImage={{
-          data_url: `http://localhost:8000/${data.userProfile.background}`,
+          data_url: `${import.meta.env.VITE_BACKEND_URL}/${
+            data.userProfile.background
+          }`,
         }}
         key={`background-${data.userProfile.username}`}
       />

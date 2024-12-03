@@ -42,8 +42,7 @@ const MyNavbar = () => {
         >
           <Image
             className="nav-pfp"
-            /* TODO: gonna be different in production */
-            src={`http://127.0.0.1:8000/${user.avatar}`}
+            src={`${import.meta.env.VITE_BACKEND_URL}/${user.avatar}`}
             roundedCircle
           />
         </NavLink>

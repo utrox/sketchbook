@@ -40,8 +40,6 @@ class User(AbstractUser):
         self.check_username_validity(self.username)
         self.full_clean()
 
-        if self.pk is None:
-            self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
 
     def __str__(self):
