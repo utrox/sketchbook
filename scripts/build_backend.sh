@@ -16,6 +16,10 @@ python ./manage.py collectstatic --no-input
 echo "⚙️ Applying database migrations..."
 python ./manage.py migrate
 
+# Creating default superuser if it doesn't exist
+echo "👤 Creating default superuser, if doesnt exist..."
+python ./manage.py create_default_superuser
+
 echo "✅ Backend built successfully! 🎉"
 
 # Return to the original directory
