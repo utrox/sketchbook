@@ -19,8 +19,7 @@ const PostCommentHeader = (props: PostCommentHeaderProps) => {
       <Link to={`/profile/${props.user.username}`}>
         <Avatar
           alt={props.user.username}
-          /* TODO: production link image */
-          src={`http://127.0.0.1:8000/${props.user.avatar}`}
+          src={`${import.meta.env.VITE_BACKEND_URL}/${props.user.avatar}`}
         />
       </Link>
       <div>

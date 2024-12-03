@@ -7,7 +7,6 @@ import ImageUploading, {
 } from "react-images-uploading";
 
 import SelectedImage from "./SelectedImage";
-import { useEffect } from "react";
 
 type ImageProportions = {
   maxWidth: number;
@@ -31,8 +30,8 @@ const ImageUploader = ({
   label,
   maxImages = 1,
   placeholderImage,
-  imageProportions,
-}: ImageUploaderProps) => {
+}: //imageProportions,
+ImageUploaderProps) => {
   const onChange = (imageList: ImageListType) => {
     setImages(imageList);
   };

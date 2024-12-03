@@ -39,6 +39,8 @@ const useQueryWithCursorPagination = (
     ...defaultVariables,
   });
 
+  /* 
+  TODO: review if this is needed:
   const handleQueryVariableChange = (newVariables: QueryParameters) => {
     setVariables({
       ...newVariables,
@@ -46,10 +48,11 @@ const useQueryWithCursorPagination = (
     });
     // stopPolling();
     // startPolling(refetchInterval);
-  };
+  }; */
 
-  const { data, loading, fetchMore, refetch, startPolling, stopPolling } =
-    useQuery(graphqlQuery, {
+  const { data, loading, refetch, startPolling, stopPolling } = useQuery(
+    graphqlQuery,
+    {
       variables: variables,
       // Allows for loading state changes on fetchMore
       notifyOnNetworkStatusChange: true,
@@ -63,7 +66,8 @@ const useQueryWithCursorPagination = (
           );
         }
       },
-    });
+    }
+  );
 
   /* Fetch more items, after the last loaded item. */
   const loadMoreItems = () => {
