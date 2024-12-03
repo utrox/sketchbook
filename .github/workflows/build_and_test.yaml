@@ -1,0 +1,76 @@
+name: Build and Test Application
+
+on:
+  push:
+    branches:
+      - '*' # Push events on all branches should trigger the workflow
+  pull_request:
+    branches:
+      - '*' # Pull request events on all branches should trigger the workflow
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    env:
+      SKTCH_DEBUG: True
+      SKTCH_SECRET_KEY: changeme!
+      SKTCH_ALLOWED_HOSTS: localhost,127.0.0.1
+      SKTCH_ADMIN_USERNAME: admin
+      SKTCH_ADMIN_PASSWORD: Sup3rs3cr3t
+      DATABASE_URL: sqlite:////tmp/db.sqlite3
+    strategy:
+      max-parallel: 4
+      fail-fast: false
+      matrix:
+        python-version: [3.11, 3.12]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.18.0'
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache Python packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Cache Node.js modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install frontend dependencies
+        run: |
+          cd ./frontend
+          npm install
+
+      - name: Check with eslint
+        run: |
+          cd ./frontend
+          npm run lint
+
+      - name: Install Backend Dependencies
+        run: |
+          cd ./backend
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Apply migrations
+        run: |
+          cd ./backend
+          python manage.py migrate
+      
+      - name: Run tests
+        run: |
+          cd ./backend
+          python manage.py test

@@ -63,9 +63,9 @@ const CommentEditor = ({
     if (!updateError && !createError && !createLoading && !updateLoading) {
       setCommentContent("");
       toast.success("Comment created successfully.");
-      refetchComments && refetchComments();
+      if (refetchComments) refetchComments();
       /* TODO: after commenting, scroll up to see the newly added comment, using ref? */
-      closeModal && closeModal();
+      if (closeModal) closeModal();
     }
   };
 

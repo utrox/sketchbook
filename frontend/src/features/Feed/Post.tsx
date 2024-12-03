@@ -28,7 +28,7 @@ interface PostData {
     username: string;
     avatar: string;
   };
-  innerRef: any;
+  innerRef: React.RefObject<HTMLDivElement>;
 }
 
 const Post = (props: PostData) => {

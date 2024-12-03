@@ -40,9 +40,10 @@ const PostEditor = ({
   const { username } = useParams();
 
   const isProfileEditor = pathname.includes("profile");
-  let refetch = isProfileEditor
-    ? useQueryPostHistory(username || "").refetch
-    : useQueryFeed().refetch;
+  const refetchQueryPostHistory = useQueryPostHistory(username || "").refetch;
+  const refetchQueryFeed = useQueryFeed().refetch;
+
+  const refetch = isProfileEditor ? refetchQueryPostHistory : refetchQueryFeed;
 
   const submitForm = async () => {
     if (postId) {
@@ -54,7 +55,7 @@ const PostEditor = ({
     if (!createError && !updateError && !createLoading && !updateLoading) {
       setContent("");
       toast.success(`Post ${postId ? "updated" : "created"} successfully.`);
-      refetchFeed && refetch();
+      if (refetchFeed) refetch();
       closeModal();
     }
 

@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { StoreObject, useMutation } from "@apollo/client";
 import { EDIT_POST_MUTATION } from "../api/graphQL/mutations/post";
 
 export const useEditPost = () => {
@@ -12,7 +12,7 @@ export const useEditPost = () => {
           fields: {
             feed(existingFeed = { edges: [] }, { readField }) {
               return {
-                edges: existingFeed.edges.map((edge: any) => {
+                edges: existingFeed.edges.map((edge: { node: StoreObject }) => {
                   if (postId === readField("postId", edge.node)) {
                     return {
                       ...edge,

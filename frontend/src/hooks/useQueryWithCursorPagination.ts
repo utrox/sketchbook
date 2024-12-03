@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useQuery, DocumentNode } from "@apollo/client";
-
-interface QueryParameters {
-  [key: string]: any;
-}
+import { Dictionary } from "../types";
 
 /* 
 The problem is, that apollo-client does not support cursor-based pagination 
@@ -34,7 +31,7 @@ const useQueryWithCursorPagination = (
   refetchInterval = 15_000
 ) => {
   const [firstLoadedCursor, setFirstLoadedCursor] = useState<string | null>();
-  const [variables, setVariables] = useState<QueryParameters>({
+  const [variables, setVariables] = useState<Dictionary>({
     first: loadAtOnceCount,
     ...defaultVariables,
   });

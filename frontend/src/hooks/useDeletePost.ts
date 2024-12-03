@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { StoreObject, useMutation } from "@apollo/client";
 import { DELETE_POST_MUTATION } from "../api/graphQL/mutations/post";
 
 export const useDeletePost = (postId: number) => {
@@ -10,14 +10,16 @@ export const useDeletePost = (postId: number) => {
           feed(existingFeed = { edges: [] }, { readField }) {
             return {
               edges: existingFeed.edges.filter(
-                (edge: any) => postId !== readField("id", edge.node)
+                (edge: { node: StoreObject }) =>
+                  postId !== readField("id", edge.node)
               ),
             };
           },
           postHistory(existingPostHistory = { edges: [] }, { readField }) {
             return {
               edges: existingPostHistory.edges.filter(
-                (edge: any) => postId !== readField("id", edge.node)
+                (edge: { node: StoreObject }) =>
+                  postId !== readField("id", edge.node)
               ),
             };
           },

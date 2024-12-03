@@ -1,7 +1,15 @@
-from .exceptions import BadRequestException, UnauthorizedException, ConflictException
-
-all = [
+from .exceptions import (
+    NotFoundException,
     BadRequestException,
     UnauthorizedException,
+    UnauthenticatedException,
+    ConflictException
+)
+
+all = [
+    NotFoundException,
+    BadRequestException,
+    UnauthorizedException,
+    UnauthenticatedException,
     ConflictException,
 ]

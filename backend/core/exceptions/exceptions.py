@@ -7,10 +7,22 @@ class BadRequestException(CustomException):
         self.status_code = 400
         super().__init__(self.message)
 
-class UnauthorizedException(CustomException):
+class UnauthenticatedException(CustomException):
     def __init__(self, message):
         self.message = message
         self.status_code = 401
+        super().__init__(self.message)
+
+class UnauthorizedException(CustomException):
+    def __init__(self, message):
+        self.message = message
+        self.status_code = 403
+        super().__init__(self.message)
+
+class NotFoundException(CustomException):
+    def __init__(self, message):
+        self.message = message
+        self.status_code = 404
         super().__init__(self.message)
 
 class ConflictException(CustomException):

@@ -1,10 +1,13 @@
 import { useRef, useCallback } from "react";
+import { Dictionary } from "../types";
 
 interface InfiniteScrollProps {
-  items: any[];
+  items: Dictionary[];
   loading: boolean;
-  ItemComponent: any;
-  itemProps: any;
+  ItemComponent: React.ForwardRefExoticComponent<
+    React.RefAttributes<HTMLDivElement>
+  >;
+  itemProps: Dictionary;
   hasMore: boolean;
   loadMoreItems: () => void;
   loadingComponent?: JSX.Element;
@@ -46,11 +49,11 @@ const InfiniteScroll = ({
   return (
     <>
       {items.length === 0 && hasNoElementComponent}
-      {items.map((item: any, index: number) => (
+      {items.map((item: Dictionary, index: number) => (
         <ItemComponent
           key={index}
           {...{ ...itemProps, ...item }}
-          innerRef={items.length === index + 1 ? lastPostComponentRef : null}
+          ref={items.length === index + 1 ? lastPostComponentRef : undefined}
         />
       ))}
       {loading && loadingComponent}

@@ -1,4 +1,4 @@
-interface CommentType {
+export interface CommentType {
   id: string;
   content: string;
   createdAt: string;
@@ -9,4 +9,6 @@ interface CommentType {
   };
 }
 
-export default CommentType;
+export interface CommentNode {
+  node: CommentType;
+}

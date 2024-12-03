@@ -7,12 +7,11 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
 
 from core.exceptions import (
-    BadRequestException, 
+    BadRequestException,
     UnauthorizedException,
     ConflictException
 )
 from .validators import validate_password
-
 
 User = get_user_model()
 
@@ -21,7 +20,7 @@ User = get_user_model()
 def login_view(request):
     if not request.body:
         raise BadRequestException("Request body is empty.")
-    
+
     json_data = json.loads(request.body)
     username = json_data.get('username', '')
     password = json_data.get('password', '')
@@ -32,7 +31,7 @@ def login_view(request):
     if user is not None:
         login(request, user)
         return HttpResponseRedirect('/')
-    
+
     raise UnauthorizedException("Invalid username or password.")
 
 
@@ -46,7 +45,7 @@ def logout_view(request):
 def register_view(request):
     if not request.body:
         raise BadRequestException("Request body is empty.")
-    
+
     json_data = json.loads(request.body)
     username = json_data.get('username', '')
     password = json_data.get('password', '')
@@ -61,7 +60,7 @@ def register_view(request):
 
     try:
         User.objects.create_user(username=username, password=password)
-    except IntegrityError:
-        raise ConflictException("Username already exists.")
+    except IntegrityError as exc:
+        raise ConflictException("Username already exists.") from exc
 
     return HttpResponseRedirect('/')

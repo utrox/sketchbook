@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { StoreObject, useMutation } from "@apollo/client";
 import { DELETE_COMMENT_MUTATION } from "../api/graphQL/mutations/comment";
 
 export const useDeleteComment = (commentId: number) => {
@@ -12,7 +12,8 @@ export const useDeleteComment = (commentId: number) => {
           allCommentsForPost(existingComments = { edges: [] }, { readField }) {
             return {
               edges: existingComments.edges.filter(
-                (edge: any) => commentId !== readField("id", edge.node)
+                (edge: { node: StoreObject }) =>
+                  commentId !== readField("id", edge.node)
               ),
             };
           },

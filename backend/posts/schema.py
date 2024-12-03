@@ -2,6 +2,8 @@ import graphene
 from graphene import relay
 from django.contrib.auth import get_user_model
 
+from core.exceptions import BadRequestException
+
 from .models import Post
 from .types import PostConnection, PostNode
 from .mutations import CreatePost, UpdatePost, DeletePost
@@ -13,15 +15,15 @@ class Query(graphene.ObjectType):
     post_history = relay.ConnectionField(PostConnection, username=graphene.String(required=True))
     post_by_id = graphene.Field(PostNode, id=graphene.ID(required=True))
 
-    def resolve_feed(root, info, **kwargs):
+    def resolve_feed(self, _, **_kwargs):
         return Post.objects.all().order_by('-created_at')
-    
-    def resolve_post_by_id(root, info, id):
+
+    def resolve_post_by_id(self, _, id):
         return Post.objects.get(pk=id)
-    
-    def resolve_post_history(root, info, username, **kwargs):
+
+    def resolve_post_history(self, _, username, **_kwargs):
         if not User.objects.filter(username=username).exists():
-            raise Exception('User not found.')
+            raise BadRequestException('User not found.')
 
         return Post.objects.filter(user__username=username).order_by('-created_at')
 

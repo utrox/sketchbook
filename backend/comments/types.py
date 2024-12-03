@@ -2,8 +2,8 @@ import graphene
 from graphene import relay
 from graphene_django.types import DjangoObjectType
 
-from .models import Comment
 from users.schema import UserType
+from .models import Comment
 
 
 class CommentNode(DjangoObjectType):
@@ -11,15 +11,15 @@ class CommentNode(DjangoObjectType):
         model = Comment
         interfaces = [relay.Node]
         fields = ("id", "content", "created_at", "updated_at")
-    
+
     user = graphene.Field(UserType)
     like_count = graphene.Int()
     liked_by_user = graphene.Boolean()
 
-    def resolve_like_count(self, info, **kwargs):
+    def resolve_like_count(self, _, **_kwargs):
         return Comment.objects.get(pk=self.id).likes.count()
 
-    def resolve_liked_by_user(self, info, **kwargs):
+    def resolve_liked_by_user(self, info, **_kwargs):
         user = info.context.user
         if user.is_anonymous:
             return False

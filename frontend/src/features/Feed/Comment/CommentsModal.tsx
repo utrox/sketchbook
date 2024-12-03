@@ -4,7 +4,7 @@ import { DialogTitle, Divider, List, Container } from "@mui/material";
 import useQueryComments from "../../../hooks/useQueryComments.ts";
 import Comment, { CommentProps } from "./Comment.tsx";
 import CommentEditor from "./CommentEditor.tsx";
-import CommentType from "../../../api/graphQL/types/CommentType.ts";
+import { CommentType } from "../../../api/graphQL/types/CommentType.ts";
 import InfiniteScroll from "../../../components/InfiniteScroll.tsx";
 
 const CommentsModal = ({ postId }: { postId: number }) => {

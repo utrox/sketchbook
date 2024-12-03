@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { StoreObject, useMutation } from "@apollo/client";
 import { EDIT_COMMENT_MUTATION } from "../api/graphQL/mutations/comment";
 
 export const useEditComment = () => {
@@ -17,18 +17,20 @@ export const useEditComment = () => {
               { readField }
             ) {
               return {
-                edges: existingComments.edges.map((edge: any) => {
-                  if (commentId === readField("id", edge.node)) {
-                    return {
-                      ...edge,
-                      node: {
-                        ...edge.node,
-                        content: commentContent,
-                      },
-                    };
+                edges: existingComments.edges.map(
+                  (edge: { node: StoreObject }) => {
+                    if (commentId === readField("id", edge.node)) {
+                      return {
+                        ...edge,
+                        node: {
+                          ...edge.node,
+                          content: commentContent,
+                        },
+                      };
+                    }
+                    return edge;
                   }
-                  return edge;
-                }),
+                ),
               };
             },
           },
