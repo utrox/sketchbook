@@ -10,4 +10,4 @@ User = get_user_model()
 class AuthenticationDevelopmentMiddleware(MiddlewareMixin):
      def process_request(self, request):
         backend = import_string("django.contrib.auth.backends.ModelBackend")()
-        request.user = backend.get_user(User.objects.get(username='q').id)
+        request.user = backend.get_user(User.objects.all().first().id)
