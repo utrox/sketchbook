@@ -4,6 +4,8 @@ set -o errexit
 
 # Save the current directory
 original_path=$(pwd)
+echo "PATH IS: "
+echo $(pwd)
 
 echo "🚀 Starting the build process..."
 
