@@ -294,4 +294,5 @@ dist
 
 
 backend/uploads/images/*
+backend/client/*
 notes.txt

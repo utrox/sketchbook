@@ -7,7 +7,7 @@ import { Avatar, Tab, Tabs, Button, Modal, Container } from "@mui/material";
 
 // Hooks
 import { useAuth } from "../../hooks/useAuth";
-import useQueryUserProfileData from "../../hooks/useUserProfileData";
+import useQueryUserProfileData from "../../hooks/useQueryUserProfileData";
 
 // Components
 import Navbar from "../../features/Navbar/Navbar";
@@ -26,7 +26,7 @@ const Userprofile = () => {
   const [isProfileEditorOpen, setIsProfileEditorOpen] = useState(false);
   const { data, loading } = useQueryUserProfileData(username);
 
-  const handleTabChange = (e: React.SyntheticEvent, newValue: number) => {
+  const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setTabIndex(newValue);
   };
 
@@ -43,14 +43,21 @@ const Userprofile = () => {
               style={{
                 background: `
       linear-gradient(var(--image-gradient), var(--image-gradient)),
-      url(http://127.0.0.1:8000/${data.userProfile.background}) no-repeat center center / cover
+      url(${import.meta.env.VITE_BACKEND_URL}/${
+                  // Replace backslashes with forward slashes. In img src,
+                  // the browser does it for us, but in css, we need to do it manually,
+                  // otherwise the link is broken.
+                  data?.userProfile.background.replace(/\\/g, "/")
+                }) no-repeat center center / cover
     `,
               }}
             ></div>
             <div className="profile-data">
               <Avatar
                 className="profile-avatar"
-                src={`http://127.0.0.1:8000/${data.userProfile.avatar}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/${
+                  data.userProfile.avatar
+                }`}
                 alt={username}
                 onClick={() => setIsProfileEditorOpen(true)}
               >

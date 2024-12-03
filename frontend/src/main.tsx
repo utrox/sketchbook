@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import {
   from,
-  HttpLink,
   ApolloClient,
   ApolloProvider,
   InMemoryCache,
@@ -35,8 +34,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 const uploadLink = createUploadLink({
-  // TODO: read URL from env variable
-  uri: "http://localhost:8000/graphql",
+  uri: import.meta.env.VITE_BACKEND_GRAPHQL_URL,
 });
 
 const link = from([errorLink, uploadLink]);
