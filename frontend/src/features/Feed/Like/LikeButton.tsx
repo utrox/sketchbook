@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { IconButton, Dialog } from "@mui/material";
-import { toast } from "react-toastify";
 
 import FavouriteIcon from "@mui/icons-material/Favorite";
 import FavouriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -19,8 +18,8 @@ type LikeButtonProps = {
 
 const LikeButton = ({
   liked,
-  postId,
-  commentId,
+  postId = 0,
+  commentId = 0,
   likeCount,
 }: LikeButtonProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -34,14 +33,11 @@ const LikeButton = ({
   }, [liked]);
 
   /* Set up whether it's a LikeButton for a Comment or a Post component. */
+  const postToggle = useTogglePostLike({ postId, liked, likeCount });
+  const commentToggle = useToggleCommentLike({ commentId, liked, likeCount });
   const toggleLike = postId
-    ? useTogglePostLike({ postId, liked, likeCount }).togglePostLike
-    : commentId
-    ? useToggleCommentLike({ commentId, liked, likeCount }).toggleCommentLike
-    : () =>
-        toast.error(
-          "LikeButton component configured wrong. No commentId or postId provided."
-        );
+    ? postToggle.togglePostLike
+    : commentToggle.toggleCommentLike;
 
   return (
     <>

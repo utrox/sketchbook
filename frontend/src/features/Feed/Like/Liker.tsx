@@ -11,7 +11,7 @@ interface LikerProps {
     username: string;
     avatar: string;
   };
-  innerRef: any;
+  innerRef: React.RefObject<HTMLDivElement>;
 }
 
 const Liker = (props: LikerProps) => {

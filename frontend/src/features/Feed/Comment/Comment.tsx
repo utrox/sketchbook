@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Divider, Modal, Container } from "@mui/material";
 
 // Hooks
@@ -24,7 +24,7 @@ export interface CommentProps {
     username: string;
     avatar: string;
   };
-  innerRef: any;
+  innerRef: React.RefObject<HTMLDivElement>;
 }
 
 const Comment = (props: CommentProps) => {
