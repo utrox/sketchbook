@@ -258,5 +258,5 @@ if is_testing:
     }
 
 logger = logging.getLogger(__name__)
-logger.info(f"SETTINGS: Debug mode: {DEBUG}")
-logger.info(f"SETTINGS: Running in testing mode: {is_testing}")
+logger.error(f"SETTINGS: Debug mode: {DEBUG}")
+logger.error(f"SETTINGS: Running in testing mode: {is_testing}")
