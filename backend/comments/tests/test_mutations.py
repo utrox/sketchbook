@@ -1,10 +1,13 @@
 import json
+import logging
+
 from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
 
+from posts.models import Post
+
 from .queries import *
 from ..models import Comment
-from posts.models import Post
 
 User = get_user_model()
 
@@ -21,7 +24,8 @@ class CommentMutationTests(GraphQLTestCase):
             user=self.user2,
             post=self.post
         )
-        
+        logging.disable(logging.CRITICAL)
+
     def assertCommentNotAddedToPost(self):
         self.assertEqual(len(self.post.comments.all()), 1)
 

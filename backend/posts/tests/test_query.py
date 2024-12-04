@@ -1,11 +1,15 @@
 import json
+import logging
+
+from graphql_relay import to_global_id
 from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
-from graphql_relay import to_global_id
+
+from likes.models import PostLike
 
 from .queries import *
 from ..models import Post
-from likes.models import PostLike
+
 
 User = get_user_model()
 
@@ -22,6 +26,8 @@ class PostQueryTests(GraphQLTestCase):
             self.posts.append(Post.objects.create(content=f"{i}-post", user=self.user))
         PostLike.objects.create(post=self.posts[0], user=self.user)
         PostLike.objects.create(post=self.posts[0], user=self.user2)
+        # Disable logging for tests
+        logging.disable(logging.CRITICAL)
 
     def test_query_posts(self):
         response = self.query(GET_FEED_DATA, variables={'first': 10})

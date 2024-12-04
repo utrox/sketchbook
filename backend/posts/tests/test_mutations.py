@@ -1,4 +1,6 @@
 import json
+import logging
+
 from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
 
@@ -15,6 +17,7 @@ class PostMutationTests(GraphQLTestCase):
             username='testuser2', password='testpassword2')
         self.post = Post.objects.create(
             content="Hello, world!", user=self.user2)
+        logging.disable(logging.CRITICAL)
 
     def test_create_post_unauthenticated(self):
         response = self.query(
