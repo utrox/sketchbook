@@ -211,7 +211,7 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),  # Log file path
             'when': 'midnight',  # Rotate every day
             'maxBytes': 1024 * 1024 * 10,  # 10 MB
