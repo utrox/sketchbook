@@ -1,6 +1,5 @@
 import graphene
 from graphene_file_upload.scalars import Upload
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from .types import UserType
 
@@ -10,7 +9,7 @@ class EditUser(graphene.Mutation):
         password = graphene.String(required=False)
         avatar =  Upload(required=False)
         background = Upload(required=False)
-    
+
     user = graphene.Field(UserType)
     ok = graphene.Boolean()
 
@@ -24,6 +23,6 @@ class EditUser(graphene.Mutation):
             user.override_avatar(avatar)
         if background:
             user.override_background(background)
-        
+
         user.save()
         return EditUser(user=user, ok=True)

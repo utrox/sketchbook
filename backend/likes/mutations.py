@@ -1,13 +1,16 @@
 import graphene
 
-from .models import CommentLike, PostLike
-
-""" TODO: make imports better with __init__.py """
 from posts.models import Post
-from comments.models import Comment
 from posts.types import PostNode
+from comments.models import Comment
 from comments.types import CommentNode
+from core.exceptions import (
+    BadRequestException,
+    NotFoundException,
+    UnauthenticatedException
+)
 
+from .models import CommentLike, PostLike
 
 #########################################################
 # Likes for comments                                    #
@@ -22,12 +25,12 @@ class ToggleCommentLike(graphene.Mutation):
         user = info.context.user
 
         if not user.is_authenticated:
-            raise Exception("You must be logged in to like a comment.")   
-        
+            raise UnauthenticatedException("You must be logged in to like a comment.")
+
         try:
             comment = Comment.objects.get(pk=comment_id)
         except Comment.DoesNotExist:
-            raise Exception("Comment does not exist.")
+            raise NotFoundException("Comment does not exist.")
 
         try:
             like = CommentLike.objects.get(user_id=user.pk, comment_id=comment_id)
@@ -51,16 +54,16 @@ class TogglePostLike(graphene.Mutation):
         user = info.context.user
 
         if not user.is_authenticated:
-            raise Exception("You must be logged in to like a post.") 
+            raise UnauthenticatedException("You must be logged in to like a post.")
 
         if not post_id:
-            raise Exception("Post ID is required.")  
-        
+            raise BadRequestException("Post ID is required.")
+
         try:
             post = Post.objects.get(pk=post_id)
         except Post.DoesNotExist:
-            raise Exception("Post does not exist.")
-        
+            raise NotFoundException("Post does not exist.")
+
         try:
             like = PostLike.objects.get(user_id=user.pk, post_id=post_id)
             like.delete()

@@ -1,8 +1,15 @@
 import graphene
 
+from posts.models import Post
+from core.exceptions import (
+    NotFoundException,
+    UnauthorizedException,
+    UnauthenticatedException
+)
+
 from .models import Comment
 from .types import CommentNode
-from posts.models import Post
+
 
 
 class CreateComment(graphene.Mutation):
@@ -14,10 +21,10 @@ class CreateComment(graphene.Mutation):
 
     def mutate(self, info, post_id, content):
         if not info.context.user.is_authenticated:
-            raise Exception("You must be logged in to create a comment.")
-        
+            raise UnauthenticatedException("You must be logged in to create a comment.")
+
         if not Post.objects.filter(pk=post_id).exists():
-            raise Exception("Post does not exist.")
+            raise NotFoundException("Post does not exist.")
 
         comment = Comment(content=content, post_id=post_id, user=info.context.user)
         comment.full_clean()
@@ -37,14 +44,14 @@ class UpdateComment(graphene.Mutation):
             comment = Comment.objects.get(pk=id)
 
             if not comment.can_edit(info.context.user):
-                raise Exception("You are not authorized to edit this comment.")
+                raise UnauthorizedException("You are not authorized to edit this comment.")
 
             comment.content = content
             comment.save()
 
             return UpdateComment(comment=comment)
         except Comment.DoesNotExist:
-            raise Exception(f"Comment does not exist.")
+            raise NotFoundException("Comment does not exist.")
 
 
 class DeleteComment(graphene.Mutation):
@@ -58,10 +65,9 @@ class DeleteComment(graphene.Mutation):
             comment = Comment.objects.get(pk=id)
 
             if not comment.can_edit(info.context.user):
-                raise Exception("You are not authorized to delete this comment.")
+                raise UnauthorizedException("You are not authorized to delete this comment.")
 
             comment.delete()
             return DeleteComment(ok=True)
         except Comment.DoesNotExist:
-            raise Exception(f"Comment does not exist.")
-
+            raise NotFoundException("Comment does not exist.")

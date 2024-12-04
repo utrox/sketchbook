@@ -1,4 +1,11 @@
 import graphene
+
+from core.exceptions import (
+    NotFoundException,
+    UnauthenticatedException,
+    UnauthorizedException
+)
+
 from .models import Post
 from .types import PostNode
 
@@ -18,8 +25,8 @@ class CreatePost(graphene.Mutation):
         user = info.context.user
 
         if not user.is_authenticated:
-            raise Exception("You must be logged in to create a post.")
-        
+            raise UnauthenticatedException("You must be logged in to create a post.")
+
         post = Post(content=post_data.content, image=post_data.image, user=user)
         post.full_clean()
         post.save()
@@ -34,23 +41,22 @@ class UpdatePost(graphene.Mutation):
     post = graphene.Field(PostNode)
 
     def _can_edit(self, info, post):
-        if not info.context.user.is_authenticated or post.user != info.context.user:
-            return False
+        return info.context.user.is_authenticated and post.user == info.context.user
 
     def mutate(self, info, id, post_data):
         try:
             post = Post.objects.get(pk=id)
 
             if not post.can_edit(info.context.user):
-                raise Exception("You are not authorized to edit this post.")
-            
+                raise UnauthorizedException("You are not authorized to edit this post.")
+
             post.content = post_data.content
             post.image = post_data.image
-            
+
             post.save()
             return UpdatePost(post=post)
         except Post.DoesNotExist:
-            raise Exception("Post does not exist.")
+            raise NotFoundException("Post does not exist.")
 
 
 class DeletePost(graphene.Mutation):
@@ -64,9 +70,9 @@ class DeletePost(graphene.Mutation):
             post = Post.objects.get(pk=id)
 
             if not post.can_edit(info.context.user):
-                raise Exception("You are not authorized to delete this post.")
-            
+                raise UnauthorizedException("You are not authorized to delete this post.")
+
             post.delete()
             return DeletePost(ok=True)
         except Post.DoesNotExist:
-            raise Exception("Post does not exist.")
+            raise NotFoundException("Post does not exist.")

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import mimetypes
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -55,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # TODO: commented out for postman requests, uncomment: 
+    # TODO: commented out for postman requests, uncomment:
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # TODO: remove this middleware used for development
@@ -164,25 +165,25 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 25 * 1024 * 1024  # 10 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024   # 5 MB
 
 
-REACT_APP_BUILD_PATH= BASE_DIR / "client" 
+REACT_APP_BUILD_PATH= BASE_DIR / "client"
 STATICFILES_DIRS = [
     REACT_APP_BUILD_PATH,
 ]
 
 
-# Add mimetypes for css and js files, otherwise in production the following 
+# Add mimetypes for css and js files, otherwise in production the following
 # error will be raised by the browser:
-# Failed to load module script: Expected a JavaScript module script but the server 
-# responded with a MIME type of "text/html". 
+# Failed to load module script: Expected a JavaScript module script but the server
+# responded with a MIME type of "text/html".
 # Strict MIME type checking is enforced for module scripts per HTML spec.
-import mimetypes
-
 mimetypes.add_type("text/css", ".css", True)
 mimetypes.add_type("text/javascript", ".js", True)
 
 # Render.com: Django settings for static assets
 # This production code might break development mode, so we check whether we're in DEBUG mode
-if not DEBUG: # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
+if not DEBUG:
+    # Tell Django to copy static assets into a
+    # path called `staticfiles` (this is specific to Render)
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
     # and renames the files with unique names for each version to support long-term caching

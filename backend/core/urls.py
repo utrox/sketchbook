@@ -28,8 +28,17 @@ urlpatterns = [
     path('graphql', FileUploadGraphQLView.as_view(graphiql=True, schema=schema)),
     path('auth/', include('users.urls')),
     # Serve media files
-    re_path(r"^images/(?P<path>.*)$", serve_media_images, {"document_root": settings.MEDIA_IMAGES_ROOT}),
-    re_path(r"^(?P<path>.*)$", serve_react, {"document_root": settings.REACT_APP_BUILD_PATH}),
+    re_path(
+        r"^images/(?P<path>.*)$",
+        serve_media_images,
+        {"document_root": settings.MEDIA_IMAGES_ROOT}
+    ),
+    # Serve static and react files
+    re_path(
+        r"^(?P<path>.*)$",
+        serve_react,
+        {"document_root": settings.REACT_APP_BUILD_PATH}
+    ),
 ]
 
 # Serve media files securely in dev

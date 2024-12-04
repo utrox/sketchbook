@@ -15,6 +15,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def check_username_validity(self, username):
+        """ Check if the username passes set validity tests. """
         if len(username) < 3 or len(username) > 20:
             raise ValueError("Username must be at least 3 and at most 20 characters long.")
         if self.username != username and User.objects.filter(username=username).exists():
@@ -23,13 +24,15 @@ class User(AbstractUser):
             raise ValueError("Username must be alphanumeric.")
 
     def override_avatar(self, avatar):
+        """ Replace the current avatar image with the new one after validation. """
         validate_image(avatar)
-        
+
         if self.avatar != DEFAULT_AVATAR:
             self.avatar.delete(save=False)
         self.avatar = avatar
 
     def override_background(self, background):
+        """ Replace the current profile background image with the new one after validation. """
         validate_image(background)
 
         if self.background != DEFAULT_BACKGROUND:
@@ -40,7 +43,7 @@ class User(AbstractUser):
         self.check_username_validity(self.username)
         self.full_clean()
 
-        super(User, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username

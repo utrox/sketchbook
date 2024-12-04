@@ -19,6 +19,7 @@ def count_lines_of_code():
     files = [file for file in files if file.endswith(('.py', '.ts', '.js', '.tsx', '.html', '.css'))]
 
     lines = defaultdict(int)
+    files_count = defaultdict(int)
     total_lines = 0
     for file in files:
         # Open the file in read mode, ignoring any encoding errors
@@ -27,10 +28,12 @@ def count_lines_of_code():
             line_count = sum(1 for _ in f)
             lines[file.split('.')[-1]] += line_count
             total_lines += line_count
+            files_count[file.split('.')[-1]] += 1
 
     # Print the total number of lines found
     print("lines", lines)
     print(f"Total lines of code: {total_lines}")
+    print ("Number of files by type", files_count)
 
 if __name__ == "__main__":
   count_lines_of_code()

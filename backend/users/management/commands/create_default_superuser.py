@@ -2,7 +2,7 @@
 import os
 
 from django.contrib.auth import get_user_model
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 User = get_user_model()
 
@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write("Creating default superuser if not exists...")
-        username = os.environ.get("SKTCH_ADMIN_USERNAME") 
+        username = os.environ.get("SKTCH_ADMIN_USERNAME")
         password = os.environ.get("SKTCH_ADMIN_PASSWORD")
         if not User.objects.filter(username=username).exists():
             User.objects.create_superuser(username=username, password=password)

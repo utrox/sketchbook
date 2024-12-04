@@ -2,8 +2,8 @@ import graphene
 from graphene import relay
 from graphene_django import DjangoObjectType
 
-from .models import Post
 from users.schema import UserType
+from .models import Post
 
 
 class PostNode(DjangoObjectType):
@@ -18,16 +18,16 @@ class PostNode(DjangoObjectType):
     liked_by_user = graphene.Boolean()
     comment_count = graphene.Int()
 
-    def resolve_like_count(self, info, **kwargs):
+    def resolve_like_count(self, _, **_kwargs):
         return Post.objects.get(pk=self.id).likes.count()
-    
-    def resolve_likers(self, info, **kwargs):
+
+    def resolve_likers(self, _, **_kwargs):
         return [l.user for l in Post.objects.get(pk=self.id).likes.all()]
-    
-    def resolve_comment_count(self, info, **kwargs):
+
+    def resolve_comment_count(self, _, **_kwargs):
         return Post.objects.get(pk=self.id).comments.count()
-    
-    def resolve_liked_by_user(self, info, **kwargs):
+
+    def resolve_liked_by_user(self, info, **_kwargs):
         user = info.context.user
         if user.is_anonymous:
             return False

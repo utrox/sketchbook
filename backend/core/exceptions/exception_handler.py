@@ -1,7 +1,8 @@
 import logging
+from json.decoder import JSONDecodeError
+
 from django.http import JsonResponse
 from .exceptions import CustomException
-from json.decoder import JSONDecodeError 
 
 # TODO: add logging to exception handler
 logger = logging.getLogger(__name__)
@@ -19,11 +20,11 @@ class CustomExceptionHandlerMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         return response
-    
+
     def _process_custom_exception(self, exception):
         if isinstance(exception.message, str):
             exception.message = [exception.message]
-        
+
         return {
             "errors": [
                 {
@@ -31,11 +32,11 @@ class CustomExceptionHandlerMiddleware:
                 } for error in exception.message
             ],
         }
-    
+
     def _process_default_exception(self, exception):
         if isinstance(exception, JSONDecodeError):
             exception.status_code = 400
-        
+
         return {
             "errors": [
                 {
@@ -43,7 +44,7 @@ class CustomExceptionHandlerMiddleware:
                 }
             ],
         }
-        
+
     def process_exception(self, request, exception):
         # Match the response format to the default graphQL error,
         # so that it's easier to handle on the frontend.
@@ -52,7 +53,7 @@ class CustomExceptionHandlerMiddleware:
             response_data = self._process_custom_exception(exception)
         else:
             response_data = self._process_default_exception(exception)
-        
+
         status_code = getattr(exception, 'status_code', 500)
-        
+
         return JsonResponse(response_data, status=status_code)

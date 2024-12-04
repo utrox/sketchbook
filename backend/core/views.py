@@ -15,11 +15,14 @@ def serve_react(request, path, document_root=None):
     path = posixpath.normpath(path).lstrip("/")
     fullpath = Path(safe_join(document_root, path))
     logging.info("fullpath static: %s", fullpath)
+    # If the file exists, then serve the it, because
+    # the user is requesting a static file.
     if fullpath.is_file():
         return static_serve(request, path, document_root)
-    else:
-        print("serving index.html")
-        return static_serve(request, "index.html", document_root)
+    # Serve index.html for all other paths, because
+    # the user is requesting a frontend route. Let React
+    # handle the routing, and possible 404.
+    return static_serve(request, "index.html", document_root)
 
 
 # TODO: make this view secure,

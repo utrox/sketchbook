@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from utils.models import TimestampedModel
 from django.core.validators import MaxLengthValidator, MinLengthValidator
+
+from utils.models import TimestampedModel
 
 
 User = get_user_model()

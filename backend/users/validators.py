@@ -15,7 +15,7 @@ def validate_password(password: str):
         CommonPasswordValidator,
     ]
     errors = []
-    
+
     for validator in validators:
         try:
             validator().validate(password)
@@ -26,6 +26,7 @@ def validate_password(password: str):
 
 
 def validate_image(image: InMemoryUploadedFile):
+    """ Raises exceptions if the image is too big, too small, or not an image. """
     width, height = get_image_dimensions(image)
     if image.size > 5 * 1024 * 1024:
         raise ValueError("Image size must be less than 5MB.")

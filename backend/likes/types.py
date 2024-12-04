@@ -2,8 +2,8 @@ import graphene
 from graphene import relay
 from graphene_django.types import DjangoObjectType
 
-from .models import PostLike, CommentLike
 from users.schema import UserType
+from .models import PostLike, CommentLike
 
 
 class CommentLikeNode(DjangoObjectType):
