@@ -214,7 +214,6 @@ LOGGING = {
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),  # Log file path
             'when': 'midnight',  # Rotate every day
-            'maxBytes': 1024 * 1024 * 10,  # 10 MB
             'interval': 7,  # Every 7 days
             'backupCount': 8,  # Keep 8 weeks of logs
             'formatter': 'verbose',
