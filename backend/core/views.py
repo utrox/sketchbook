@@ -10,6 +10,8 @@ logger = logging.getLogger(__name__)
 # TODO: logging
 def serve_react(request, path, document_root=None):
     logging.info("Serving static file: %s", path)
+    logging.info("document_root static: %s", document_root)
+
     path = posixpath.normpath(path).lstrip("/")
     fullpath = Path(safe_join(document_root, path))
     logging.info("fullpath static: %s", fullpath)
