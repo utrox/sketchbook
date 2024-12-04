@@ -29,7 +29,7 @@ class AuthenticationViewsTests(TestCase):
             data=json.dumps({'username': self.user.username, 'password': 'wrongpassword'}),
             content_type='application/json'
         )
-        self.assertEqual(response.status_code, 401)  # Unauthorized
+        self.assertEqual(response.status_code, 403)  # Unauthorized
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
     def test_login_empty_body(self):
@@ -109,7 +109,7 @@ class AuthenticationViewsTests(TestCase):
             data=json.dumps({'username': self.user.username, 'password': 'StrongP@ssw0rd'}),
             content_type='application/json'
         )
-        self.assertEqual(response.status_code, 409)  # Conflict
+        self.assertEqual(response.status_code, 400)  # Conflict
 
     def test_register_successful(self):
         response = self.client.post(

@@ -2,6 +2,8 @@ import logging
 from json.decoder import JSONDecodeError
 
 from django.http import JsonResponse
+from django.core.exceptions import ValidationError
+
 from .exceptions import CustomException
 
 # TODO: add logging to exception handler
@@ -35,6 +37,9 @@ class CustomExceptionHandlerMiddleware:
 
     def _process_default_exception(self, exception):
         if isinstance(exception, JSONDecodeError):
+            exception.status_code = 400
+
+        if isinstance(exception, ValidationError):
             exception.status_code = 400
 
         return {

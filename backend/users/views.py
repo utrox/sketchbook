@@ -13,7 +13,6 @@ from core.exceptions import (
 )
 from .validators import validate_password
 
-
 User = get_user_model()
 
 

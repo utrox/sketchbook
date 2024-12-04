@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 import os
+import sys
 import mimetypes
 from pathlib import Path
 
@@ -208,8 +209,12 @@ LOGGING = {
     'handlers': {
         'file': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'debug.log'),  # Log file path
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'debug.log'),  # Log file path
+            'when': 'midnight',  # Rotate every day
+            'maxBytes': 1024 * 1024 * 10,  # 10 MB
+            'interval': 7,  # Every 7 days
+            'backupCount': 8,  # Keep 8 weeks of logs
             'formatter': 'verbose',
         },
         'console': {
@@ -231,10 +236,21 @@ LOGGING = {
     },
 }
 
+# Add loggers for each of our apps
 apps = ['core', 'users', 'posts', 'comments', 'likes', 'utils']
 for app in apps:
     LOGGING['loggers'][app] = {
         'handlers': ['file', 'console'],
         'level': 'DEBUG',
         'propagate': False,
+    }
+
+
+# If we're running tests, disable all logging
+is_testing = 'test' in sys.argv
+
+if is_testing:
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': True,  # Disable all logging
     }
