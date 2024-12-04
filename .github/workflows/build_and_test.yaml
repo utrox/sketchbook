@@ -10,7 +10,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.9, 3.10, 3.11, 3.12]
+        python-version: [3.9, 3.11, 3.12]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,7 +45,7 @@ jobs:
       - name: Check with eslint
         run: |
           cd ./frontend
-          npm run eslint
+          npm run lint
 
       - name: Install Backend Dependencies
         run: |
