@@ -4,13 +4,25 @@ on:
   push:
     branches:
       - '*' # Push events on all branches should trigger the workflow
+  pull_request:
+    branches:
+      - '*' # Pull request events on all branches should trigger the workflow
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
+    env:
+      SKTCH_DEBUG: True
+      SKTCH_SECRET_KEY: changeme!
+      SKTCH_ALLOWED_HOSTS: localhost,127.0.0.1
+      SKTCH_ADMIN_USERNAME: admin
+      SKTCH_ADMIN_PASSWORD: Sup3rs3cr3t
+      DATABASE_URL: sqlite:////tmp/db.sqlite3
     strategy:
       max-parallel: 4
+      fail-fast: false
       matrix:
-        python-version: [3.12]
+        python-version: [3.11, 3.12]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
