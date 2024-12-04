@@ -14,6 +14,8 @@ import os
 import sys
 import mimetypes
 from pathlib import Path
+import logging
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -254,3 +256,7 @@ if is_testing:
         'version': 1,
         'disable_existing_loggers': True,  # Disable all logging
     }
+
+logger = logging.getLogger(__name__)
+logger.info(f"SETTINGS: Debug mode: {DEBUG}")
+logger.info(f"SETTINGS: Running in testing mode: {is_testing}")
