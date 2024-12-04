@@ -16,7 +16,7 @@ def serve_react(request, path, document_root=None):
     fullpath = Path(safe_join(document_root, path))
     logging.info("fullpath static: %s", fullpath)
     if fullpath.is_file():
-        return static_serve(request, fullpath, document_root)
+        return static_serve(request, fullpath)
     else:
         print("serving index.html")
         return static_serve(request, "index.html", document_root)
