@@ -12,6 +12,7 @@ def serve_react(request, path, document_root=None):
     logging.info("Serving static file: %s", path)
     path = posixpath.normpath(path).lstrip("/")
     fullpath = Path(safe_join(document_root, path))
+    logging.info("fullpath static: %s", fullpath)
     if fullpath.is_file():
         return static_serve(request, fullpath, document_root)
     else:
