@@ -187,3 +187,53 @@ if not DEBUG: # Tell Django to copy static assets into a path called `staticfile
     # Enable the WhiteNoise storage backend, which compresses static files to reduce disk use
     # and renames the files with unique names for each version to support long-term caching
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# Logging setup
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),  # Log file path
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
+apps = ['core', 'users', 'posts', 'comments', 'likes', 'utils']
+for app in apps:
+    LOGGING['loggers'][app] = {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG',
+        'propagate': False,
+    }

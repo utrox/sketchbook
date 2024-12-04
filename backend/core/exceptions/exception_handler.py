@@ -47,6 +47,7 @@ class CustomExceptionHandlerMiddleware:
     def process_exception(self, request, exception):
         # Match the response format to the default graphQL error,
         # so that it's easier to handle on the frontend.
+        logger.error(exception, exc_info=True)
         if isinstance(exception, CustomException):
             response_data = self._process_custom_exception(exception)
         else:
