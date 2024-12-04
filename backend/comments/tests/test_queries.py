@@ -1,10 +1,12 @@
 import json
+import logging
 from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
 
+from posts.models import Post
+
 from .queries import *
 from ..models import Comment
-from posts.models import Post
 
 User = get_user_model()
 
@@ -18,7 +20,8 @@ class CommentQueryTests(GraphQLTestCase):
         for i in range(12):
             self.comments.append(Comment.objects.create(
                 content=f"{i}-comment", user=self.user, post=self.post))
-            
+        logging.disable(logging.CRITICAL)
+
     def test_query_comments(self):
         response = self.query(GET_COMMENTS_FOR_POST, variables={'postId': self.post.id, 'first': 10})
         content = json.loads(response.content)

@@ -1,18 +1,20 @@
 import json
+import logging
 from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
 
-from .queries import *
-from ..models import CommentLike, PostLike
 from posts.models import Post
 from comments.models import Comment
 
-User = get_user_model()
+from .queries import *
+from ..models import CommentLike, PostLike
 
+User = get_user_model()
 
 class CommentLikeQueryTests(GraphQLTestCase):
     @classmethod
     def setUpTestData(cls):
+        logging.disable(logging.CRITICAL)
         cls.user = User.objects.create_user(
             username='testuser', password='testpassword')
         cls.post = Post.objects.create(content='test post', user=cls.user)

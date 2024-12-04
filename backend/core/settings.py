@@ -258,11 +258,5 @@ if is_testing:
     }
 
 logger = logging.getLogger(__name__)
-logger.error(f"SETTINGS: Debug mode: {DEBUG}")
-logger.error(f"SETTINGS: Running in testing mode: {is_testing}")
-
-if is_testing:
-    logger.disabled = True
-    for handler in logger.handlers:
-        logger.removeHandler(handler)
-    logger.setLevel(logging.ERROR)
+logger.info(f"SETTINGS: Debug mode: {DEBUG}")
+logger.info(f"SETTINGS: Running in testing mode: {is_testing}")

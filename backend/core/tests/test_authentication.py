@@ -1,7 +1,10 @@
 import json
+import logging
+
 from django.test import TestCase, Client
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+
 from core.exceptions import BadRequestException, UnauthorizedException, ConflictException
 
 User = get_user_model()
@@ -12,6 +15,7 @@ class AuthenticationViewsTests(TestCase):
         self.client = Client()
         self.user_password = 'StrongP@ssw0rd'
         self.user = User.objects.create_user(username='testuser', password=self.user_password)
+        logging.disable(logging.CRITICAL)
 
     def test_login_successful(self):
         response = self.client.post(

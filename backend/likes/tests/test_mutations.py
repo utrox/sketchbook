@@ -1,12 +1,14 @@
 import json
+import logging
+
 from graphene_django.utils.testing import GraphQLTestCase
 from django.contrib.auth import get_user_model
 
-from .queries import *
-from ..models import CommentLike, PostLike
-
 from comments.models import Comment
 from posts.models import Post
+
+from .queries import *
+from ..models import CommentLike, PostLike
 
 User = get_user_model()
 
@@ -17,6 +19,7 @@ class PostLikeMutationTests(GraphQLTestCase):
         self.post = Post.objects.create(content='test post', user=self.user)
         self.post2 = Post.objects.create(content='test post 2', user=self.user)
         PostLike.objects.create(user=self.user, post=self.post2)
+        logging.disable(logging.CRITICAL)
     
     def test_toggle_post_like_on(self):
         self.client.force_login(self.user)
