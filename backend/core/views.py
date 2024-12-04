@@ -27,5 +27,4 @@ def serve_react(request, path, document_root=None):
 def serve_media_images(request, path, document_root=None):
     logging.info("Serving media file: %s", path)
     path = posixpath.normpath(path).lstrip("/")
-    fullpath = Path(safe_join(document_root, path))
-    return static_serve(request, fullpath, document_root)
+    return static_serve(request, path, document_root)
