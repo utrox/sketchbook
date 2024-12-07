@@ -2,12 +2,21 @@ import "./auth.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useAuth } from "../../hooks/useAuth";
 
 export const Register = () => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  // Redirect to home if user is already logged in
+  const { user } = useAuth();
+  if (user) {
+    // Use window.location.href to reload, so we don't have
+    // to manually refetch user data.
+    window.location.href = "/";
+  }
 
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();

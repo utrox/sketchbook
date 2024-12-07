@@ -1,13 +1,22 @@
 import "./auth.css";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+
+import { useAuth } from "../../hooks/useAuth";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+
+  // Redirect to home if user is already logged in
+  const { user } = useAuth();
+  if (user) {
+    // Use window.location.href to redirect,
+    // so it reloads the whole app and fetches the user data again.
+    window.location.href = "/";
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +36,7 @@ export const Login = () => {
     setLoading(false);
     if (response.ok) {
       toast.success("Login successful.");
-      navigate("/");
+      window.location.href = "/";
     } else {
       const data = await response.json();
       toast.error(data.errors?.[0].message || "An error occurred.");
