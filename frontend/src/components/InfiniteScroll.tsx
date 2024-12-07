@@ -4,9 +4,7 @@ import { Dictionary } from "../types";
 interface InfiniteScrollProps {
   items: Dictionary[];
   loading: boolean;
-  ItemComponent: React.ForwardRefExoticComponent<
-    React.RefAttributes<HTMLDivElement>
-  >;
+  ItemComponent: JSX.Element;
   itemProps: Dictionary;
   hasMore: boolean;
   loadMoreItems: () => void;
