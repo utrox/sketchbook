@@ -13,6 +13,7 @@ import useQueryUserProfileData from "../../hooks/useQueryUserProfileData";
 import Navbar from "../../features/Navbar/Navbar";
 import PostHistory from "./PostHistory";
 import ProfileEditor from "./ProfileEditor";
+import PageTitle from "../../components/PageTitle";
 
 const Userprofile = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -32,6 +33,7 @@ const Userprofile = () => {
 
   return (
     <>
+      <PageTitle title={`@${username}`} />
       <Navbar />
       <Container className="userprofile-content" maxWidth="md">
         {loading || userDataLoading ? (

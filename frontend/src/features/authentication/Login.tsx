@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import PageTitle from "../../components/PageTitle";
 import { useAuth } from "../../hooks/useAuth";
 
 export const Login = () => {
@@ -46,6 +47,7 @@ export const Login = () => {
 
   return (
     <div className="login">
+      <PageTitle title="Login" />
       <div className="card">
         <div className="login-leftSide side">
           <h1>
