@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../../hooks/useAuth";
+import PageTitle from "../../components/PageTitle";
 
 export const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -44,6 +45,8 @@ export const Register = () => {
 
   return (
     <div className="register">
+      <PageTitle title="Register" />
+
       <div className="card">
         <div className="register-leftSide side">
           <h1>Register</h1>

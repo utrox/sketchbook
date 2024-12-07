@@ -6,11 +6,29 @@ import { useAuth } from "../../hooks/useAuth";
 
 /* Icons */
 import HomeIcon from "@mui/icons-material/Home";
-import MessageIcon from "@mui/icons-material/Message";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const MyNavbar = () => {
   const { user } = useAuth();
+
+  const handleLogout = async () => {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/auth/logout/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.ok) {
+      window.location.href = "/login";
+    } else {
+      const data = await response.json();
+      console.error("Logout error response: ", data);
+    }
+  };
 
   return (
     <Navbar>
@@ -24,18 +42,7 @@ const MyNavbar = () => {
         >
           <HomeIcon className="nav-icon" />
         </NavLink>
-        <NavLink
-          to="/notifications"
-          className={({ isActive }) => "nav-btn" + (isActive ? " active" : "")}
-        >
-          <NotificationsIcon className="nav-icon" />
-        </NavLink>
-        <NavLink
-          to="/messages"
-          className={({ isActive }) => "nav-btn" + (isActive ? " active" : "")}
-        >
-          <MessageIcon className="nav-icon" />
-        </NavLink>
+        <LogoutIcon className="nav-icon" onClick={handleLogout} />
         <NavLink
           to={`/profile/${user.username}/`}
           className={({ isActive }) => "nav-btn" + (isActive ? " active" : "")}

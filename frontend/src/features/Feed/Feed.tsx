@@ -8,6 +8,7 @@ import Post from "./Post";
 import FeedPostType from "../../api/graphQL/types/FeedPostType.ts";
 import InfiniteScroll from "../../components/InfiniteScroll.tsx";
 import useQueryFeed from "../../hooks/useQueryFeed.ts";
+import PageTitle from "../../components/PageTitle.tsx";
 
 export function Feed() {
   const [postEditorOpen, setPostEditorOpen] = useState(false);
@@ -34,6 +35,7 @@ export function Feed() {
 
   return (
     <>
+      <PageTitle title="Feed" />
       <Navbar />
       <Container className="content" maxWidth="sm">
         <FakePostEditor onClick={(e) => handleOpen(e)} />
