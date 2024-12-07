@@ -20,12 +20,6 @@ python ./manage.py migrate
 echo "👤 Creating default superuser, if doesnt exist..."
 python ./manage.py create_default_superuser
 
-# Ensure log directory exists
-echo "📁 Ensuring log file exists..."
-mkdir -p ./logs
-touch ./logs/debug.log
-
-
 echo "✅ Backend built successfully! 🎉"
 
 # Return to the original directory
