@@ -23,8 +23,7 @@ class AuthenticationViewsTests(TestCase):
             data=json.dumps({'username': self.user.username, 'password': self.user_password}),
             content_type='application/json'
         )
-        self.assertEqual(response.status_code, 302)  # Redirect on success
-        self.assertEqual(response.url, '/')  # Redirects to home
+        self.assertEqual(response.status_code, 204)  # Redirect on success
         self.assertTrue(response.wsgi_request.user.is_authenticated)
 
     def test_login_invalid_credentials(self):
@@ -57,14 +56,12 @@ class AuthenticationViewsTests(TestCase):
     def test_logout_successful(self):
         self.client.force_login(self.user)  # Log in the user first
         response = self.client.post(reverse('logout_view'))
-        self.assertEqual(response.status_code, 302)  # Redirects on success
-        self.assertEqual(response.url, '/')  # Redirects to home
+        self.assertEqual(response.status_code, 204)  # Redirects on success
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
     def test_logout_unauthenticated(self):
         response = self.client.post(reverse('logout_view'))
-        self.assertEqual(response.status_code, 302)  # Redirects on success
-        self.assertEqual(response.url, '/')  # Redirects to home
+        self.assertEqual(response.status_code, 204)  # Redirects on success
         self.assertFalse(response.wsgi_request.user.is_authenticated)
 
     def test_register_empty_body(self):
@@ -121,7 +118,6 @@ class AuthenticationViewsTests(TestCase):
             data=json.dumps({'username': 'newuser', 'password': 'StrongP@ssw0rd'}),
             content_type='application/json'
         )
-        self.assertEqual(response.status_code, 302)  # Redirects on success
-        self.assertEqual(response.url, '/')  # Redirects to home
+        self.assertEqual(response.status_code, 201)  # Redirects on success
         self.assertTrue(User.objects.filter(username='newuser').exists())
 
