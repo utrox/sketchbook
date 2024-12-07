@@ -1,10 +1,10 @@
-import { useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import { Dictionary } from "../types";
 
 interface InfiniteScrollProps {
   items: Dictionary[];
   loading: boolean;
-  ItemComponent: JSX.Element;
+  ItemComponent: React.ElementType;
   itemProps: Dictionary;
   hasMore: boolean;
   loadMoreItems: () => void;
