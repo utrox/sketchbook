@@ -256,6 +256,12 @@ if is_testing:
         'disable_existing_loggers': True,  # Disable all logging
     }
 
+# Make sure logfiles exist
+log_dir = os.path.join(BASE_DIR, 'logs')
+log_file = os.path.join(log_dir, 'debug.log')
+os.makedirs(log_dir, exist_ok=True)
+open(log_file, 'a').close()
+
 logger = logging.getLogger(__name__)
 logger.info(f"SETTINGS: Debug mode: {DEBUG}")
 logger.info(f"SETTINGS: Running in testing mode: {is_testing}")
