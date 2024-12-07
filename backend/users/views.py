@@ -1,7 +1,7 @@
 import json
 
 from django.db import IntegrityError
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from django.contrib.auth import authenticate, login, logout
@@ -30,7 +30,7 @@ def login_view(request):
     user = authenticate(username=username, password=password)
     if user is not None:
         login(request, user)
-        return HttpResponseRedirect('/')
+        return HttpResponse(status=204)
 
     raise UnauthorizedException("Invalid username or password.")
 
@@ -38,7 +38,7 @@ def login_view(request):
 @require_POST
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    return HttpResponse(status=204)
 
 
 @require_POST
@@ -63,4 +63,4 @@ def register_view(request):
     except IntegrityError as exc:
         raise ConflictException("Username already exists.") from exc
 
-    return HttpResponseRedirect('/')
+    return HttpResponse(status=201)

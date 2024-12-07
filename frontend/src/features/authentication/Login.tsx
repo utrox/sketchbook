@@ -1,7 +1,40 @@
 import "./auth.css";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Login = () => {
+  const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/auth/login/`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      }
+    );
+
+    setLoading(false);
+    if (response.ok) {
+      toast.success("Login successful.");
+      navigate("/");
+    } else {
+      const data = await response.json();
+      toast.error(data.errors?.[0].message || "An error occurred.");
+      console.error("Login error response: ", data);
+    }
+  };
+
   return (
     <div className="login">
       <div className="card">
@@ -23,10 +56,20 @@ export const Login = () => {
         <div className="login-rightSide side">
           <h1>Login</h1>
           <form>
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <button>Login</button>
-            {/* TODO: implement login logic, login endpoint on backend */}
+            <input
+              type="text"
+              placeholder="Username"
+              onChange={(e) => setUsername(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {/* TODO: better loading component */}
+            <button onClick={handleLogin}>
+              {loading ? "Loading..." : "Login"}
+            </button>
           </form>
         </div>
       </div>
