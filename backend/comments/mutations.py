@@ -1,3 +1,4 @@
+import logging
 import graphene
 
 from posts.models import Post
@@ -10,6 +11,8 @@ from core.exceptions import (
 from .models import Comment
 from .types import CommentNode
 
+
+logger = logging.getLogger(__name__)
 
 
 class CreateComment(graphene.Mutation):
@@ -29,6 +32,7 @@ class CreateComment(graphene.Mutation):
         comment = Comment(content=content, post_id=post_id, user=info.context.user)
         comment.full_clean()
         comment.save()
+        logger.info(f"User {info.context.user.pk} created comment {comment.pk}.")
         return CreateComment(comment=comment)
 
 
@@ -48,6 +52,7 @@ class UpdateComment(graphene.Mutation):
 
             comment.content = content
             comment.save()
+            logger.info(f"User {info.context.user.pk} updated comment {comment.pk}.")
 
             return UpdateComment(comment=comment)
         except Comment.DoesNotExist:
@@ -68,6 +73,7 @@ class DeleteComment(graphene.Mutation):
                 raise UnauthorizedException("You are not authorized to delete this comment.")
 
             comment.delete()
+            logger.info(f"User {info.context.user.pk} deleted comment {comment.pk}.")
             return DeleteComment(ok=True)
         except Comment.DoesNotExist:
             raise NotFoundException("Comment does not exist.")

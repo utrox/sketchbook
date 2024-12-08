@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 from .exceptions import CustomException
 
-# TODO: add logging to exception handler
+
 logger = logging.getLogger(__name__)
 
 

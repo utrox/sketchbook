@@ -1,7 +1,12 @@
+import logging
 import graphene
 from graphene_file_upload.scalars import Upload
 
 from .types import UserType
+
+
+logger = logging.getLogger(__name__)
+
 
 class EditUser(graphene.Mutation):
     class Arguments:
@@ -25,4 +30,5 @@ class EditUser(graphene.Mutation):
             user.override_background(background)
 
         user.save()
+        logger.info(f"User {user.pk} updated their profile.")
         return EditUser(user=user, ok=True)
