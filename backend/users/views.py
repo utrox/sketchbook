@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.db import IntegrityError
 from django.http import HttpResponse
@@ -14,6 +15,7 @@ from core.exceptions import (
 from .validators import validate_password
 
 User = get_user_model()
+logger = logging.getLogger(__name__)
 
 
 @require_POST
@@ -29,6 +31,7 @@ def login_view(request):
 
     user = authenticate(username=username, password=password)
     if user is not None:
+        logging.info("User %s authenticated successfully.", user.username)
         login(request, user)
         return HttpResponse(status=204)
 
@@ -38,6 +41,7 @@ def login_view(request):
 @require_POST
 def logout_view(request):
     logout(request)
+    logger.info("User %s logged out.", request.user.id)
     return HttpResponse(status=204)
 
 
@@ -60,6 +64,7 @@ def register_view(request):
 
     try:
         User.objects.create_user(username=username, password=password)
+        logger.info("User %s successfully created.", username)
     except IntegrityError as exc:
         raise ConflictException("Username already exists.") from exc
 

@@ -1,3 +1,4 @@
+import logging
 import graphene
 
 from core.exceptions import (
@@ -8,6 +9,9 @@ from core.exceptions import (
 
 from .models import Post
 from .types import PostNode
+
+
+logger = logging.getLogger(__name__)
 
 
 class PostInput(graphene.InputObjectType):
@@ -30,6 +34,7 @@ class CreatePost(graphene.Mutation):
         post = Post(content=post_data.content, image=post_data.image, user=user)
         post.full_clean()
         post.save()
+        logger.info(f"User {user.pk} created post {post.pk}.")
         return CreatePost(post=post)
 
 
@@ -54,6 +59,7 @@ class UpdatePost(graphene.Mutation):
             post.image = post_data.image
 
             post.save()
+            logger.info(f"User {info.context.user.pk} updated post {post.pk}.")
             return UpdatePost(post=post)
         except Post.DoesNotExist:
             raise NotFoundException("Post does not exist.")
@@ -73,6 +79,7 @@ class DeletePost(graphene.Mutation):
                 raise UnauthorizedException("You are not authorized to delete this post.")
 
             post.delete()
+            logger.info(f"User {info.context.user.pk} deleted post {id}.")
             return DeletePost(ok=True)
         except Post.DoesNotExist:
             raise NotFoundException("Post does not exist.")

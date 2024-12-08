@@ -1,3 +1,4 @@
+import logging
 import graphene
 
 from posts.models import Post
@@ -11,6 +12,8 @@ from core.exceptions import (
 )
 
 from .models import CommentLike, PostLike
+
+logger = logging.getLogger(__name__)
 
 #########################################################
 # Likes for comments                                    #
@@ -35,9 +38,13 @@ class ToggleCommentLike(graphene.Mutation):
         try:
             like = CommentLike.objects.get(user_id=user.pk, comment_id=comment_id)
             like.delete()
+            logger.info(f"User {user.pk} unliked comment {comment_id}.")
+            
         except CommentLike.DoesNotExist:
             like = CommentLike(user_id=user.pk, comment_id=comment_id)
             like.save()
+            logger.info(f"User {user.pk} liked comment {comment_id}.")
+        
         return ToggleCommentLike(comment=comment)
 
 
@@ -67,7 +74,10 @@ class TogglePostLike(graphene.Mutation):
         try:
             like = PostLike.objects.get(user_id=user.pk, post_id=post_id)
             like.delete()
+            logger.info(f"User {user.pk} liked post {post_id}.")
+
         except PostLike.DoesNotExist:
             like = PostLike(user_id=user.pk, post_id=post_id)
             like.save()
+            logger.info(f"User {user.pk} unliked post {post_id}.")
         return TogglePostLike(post=post)
