@@ -1,5 +1,5 @@
 // Lib imports
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { Modal } from "@mui/material";
 import { graphqlIdToNumericId } from "../../utils";
 
@@ -14,7 +14,7 @@ import CommentsButton from "./Comment/CommentsButton";
 import ManagementButtons from "../../components/ManagementButtons";
 import PostCommentHeader from "../../components/PostCommentHeader";
 
-interface PostData {
+interface PostProps {
   id: string;
   content: string;
   image: string;
@@ -28,10 +28,9 @@ interface PostData {
     username: string;
     avatar: string;
   };
-  innerRef: React.RefObject<HTMLDivElement>;
 }
 
-const Post = (props: PostData) => {
+const Post = forwardRef<HTMLDivElement, PostProps>((props, ref) => {
   const postNumericId = Number.parseInt(graphqlIdToNumericId(props.id));
   const { user, loading } = useAuth();
   const [isPostEditorOpen, setIsPostEditorOpen] = useState(false);
@@ -39,7 +38,7 @@ const Post = (props: PostData) => {
   const { deletePost } = useDeletePost(postNumericId);
 
   return (
-    <div className="post-body" ref={props.innerRef}>
+    <div className="post-body" ref={ref}>
       <PostCommentHeader
         user={props.user}
         createdAt={props.createdAt}
@@ -80,6 +79,6 @@ const Post = (props: PostData) => {
       </div>
     </div>
   );
-};
+});
 
 export default Post;

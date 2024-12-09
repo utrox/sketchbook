@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, forwardRef } from "react";
 import { Divider, Modal, Container } from "@mui/material";
 
 // Hooks
@@ -24,10 +24,9 @@ export interface CommentProps {
     username: string;
     avatar: string;
   };
-  innerRef: React.RefObject<HTMLDivElement>;
 }
 
-const Comment = (props: CommentProps) => {
+const Comment = forwardRef<HTMLDivElement, CommentProps>((props, ref) => {
   const commentNumericId = Number.parseInt(graphqlIdToNumericId(props.id));
 
   const { user, loading } = useAuth();
@@ -37,7 +36,7 @@ const Comment = (props: CommentProps) => {
 
   return (
     <>
-      <div ref={props.innerRef}>
+      <div ref={ref}>
         <PostCommentHeader
           user={props.user}
           createdAt={props.createdAt}
@@ -80,6 +79,6 @@ const Comment = (props: CommentProps) => {
       <Divider variant="middle" />
     </>
   );
-};
+});
 
 export default Comment;

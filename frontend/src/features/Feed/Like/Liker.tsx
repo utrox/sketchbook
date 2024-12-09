@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Avatar,
@@ -11,10 +12,9 @@ interface LikerProps {
     username: string;
     avatar: string;
   };
-  innerRef: React.RefObject<HTMLDivElement>;
 }
 
-const Liker = (props: LikerProps) => {
+const Liker = forwardRef<HTMLDivElement, LikerProps>((props, ref) => {
   return (
     /* TODO: formatting when its empty, etc. */
     <ListItem key={props.user.username} className="liker">
@@ -26,13 +26,13 @@ const Liker = (props: LikerProps) => {
               alt={props.user.username}
             />
           </ListItemAvatar>
-          <p className="username" ref={props.innerRef}>
+          <p className="username" ref={ref}>
             {props.user.username}
           </p>
         </ListItemButton>
       </Link>
     </ListItem>
   );
-};
+});
 
 export default Liker;
