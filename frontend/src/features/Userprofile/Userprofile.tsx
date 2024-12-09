@@ -19,6 +19,7 @@ const Userprofile = () => {
   const [tabIndex, setTabIndex] = useState(0);
 
   const { username } = useParams();
+
   if (!username) {
     throw new Error("No username provided in URL.");
   }
