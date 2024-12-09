@@ -1,10 +1,10 @@
 import os
 import random
 import string
-import requests
 from datetime import datetime
 from collections import defaultdict
 
+import requests
 from faker import Faker
 from django.conf import settings
 from django.core.management.base import BaseCommand
