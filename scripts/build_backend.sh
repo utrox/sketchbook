@@ -20,6 +20,10 @@ python ./manage.py migrate
 echo "👤 Creating default superuser, if doesnt exist..."
 python ./manage.py create_default_superuser
 
+# Run command to fill the database with some dummy data
+echo "📝 Filling the database with dummy data..."
+python ./manage.py populate_db
+
 echo "✅ Backend built successfully! 🎉"
 
 # Return to the original directory
