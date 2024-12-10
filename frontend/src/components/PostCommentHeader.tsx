@@ -26,7 +26,9 @@ const PostCommentHeader = (props: PostCommentHeaderProps) => {
         <Link to={`/profile/${props.user.username}`}>
           <p className="username">{props.user.username}</p>
         </Link>
-        <p>{simplifyCreationEditionTime(props.createdAt, props.updatedAt)}</p>
+        <div>
+          {simplifyCreationEditionTime(props.createdAt, props.updatedAt)}
+        </div>
       </div>
     </div>
   );
