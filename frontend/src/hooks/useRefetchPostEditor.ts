@@ -1,3 +1,9 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
+// We're going to disable this particular eslint rule regarding the conditional use of hooks.
+// This is because the condition will never change,
+// so the order of hooks is guaranteed to remain the same, thus it will not cause an issue.
+
 import useQueryFeed from "./useQueryFeed";
 import useQueryPostHistory from "./useQueryPostHistory";
 
