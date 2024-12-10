@@ -4,34 +4,23 @@ import { useState, forwardRef } from "react";
 import { toast } from "react-toastify";
 import ImageIcon from "@mui/icons-material/Image";
 import { Button, IconButton, Container, TextField } from "@mui/material";
-import { useParams, useLocation } from "react-router-dom";
 
 import useSubmitPostEditor from "../../hooks/useSubmitPostEditor";
-import useRefetchPostEditor from "../../hooks/useRefetchPostEditor";
 
 interface PostEditProps {
   postId?: number;
   initialContent?: string;
   closeModal: () => void;
-  refetchFeed?: boolean;
+  refetchFeed?: () => void;
 }
 
 const PostEditor = forwardRef<HTMLDivElement, PostEditProps>(
   ({ postId, initialContent = "", closeModal, refetchFeed }, ref) => {
     const [postContent, setContent] = useState(initialContent);
 
-    const { pathname } = useLocation();
-    const username = useParams().username || "";
-
-    const isProfileEditor = pathname.includes("profile");
-
     // Submit the post to the server, based on whether the user is editing
     // an existing post or creating a new one.
     const { makeRequest, loading, error } = useSubmitPostEditor(postId);
-
-    // Refetch the feed or the post history of the user, based on which
-    // page the user is viewing. (Feed or UserProfile)
-    const { refetch } = useRefetchPostEditor(isProfileEditor, username);
 
     const submitForm = async () => {
       await makeRequest({ postContent, postId });
@@ -39,7 +28,7 @@ const PostEditor = forwardRef<HTMLDivElement, PostEditProps>(
       if (!error && !loading) {
         setContent("");
         toast.success(`Post ${postId ? "updated" : "created"} successfully.`);
-        if (refetchFeed) refetch();
+        if (refetchFeed) refetchFeed();
         closeModal();
       }
 

@@ -6,15 +6,16 @@ interface PostCreateProps {
 }
 
 const useCreatePost = () => {
-  const [createPost, { error, loading }] = useMutation(CREATE_POST_MUTATION);
+  const [executeCreatePost, { error, loading }] =
+    useMutation(CREATE_POST_MUTATION);
 
-  const makePost = async ({ postContent }: PostCreateProps) => {
-    await createPost({
+  const createPost = async ({ postContent }: PostCreateProps) => {
+    await executeCreatePost({
       variables: { content: postContent },
     });
   };
 
-  return { makePost, error, loading };
+  return { createPost, error, loading };
 };
 
 export default useCreatePost;

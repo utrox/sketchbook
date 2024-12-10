@@ -28,6 +28,7 @@ interface PostProps {
     username: string;
     avatar: string;
   };
+  refetchFeed?: () => void;
 }
 
 const Post = forwardRef<HTMLDivElement, PostProps>((props, ref) => {
@@ -71,7 +72,7 @@ const Post = forwardRef<HTMLDivElement, PostProps>((props, ref) => {
                 postId={postNumericId}
                 closeModal={() => setIsPostEditorOpen(false)}
                 initialContent={props.content}
-                refetchFeed
+                refetchFeed={props.refetchFeed}
               />
             </Modal>
           </>

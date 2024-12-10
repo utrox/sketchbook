@@ -23,7 +23,7 @@ export function Feed() {
   };
   const handleClose = () => setPostEditorOpen(false);
 
-  const { data, loading, loadMoreItems } = useQueryFeed();
+  const { data, loading, loadMoreItems, refetch } = useQueryFeed();
 
   useEffect(() => {
     if (data) {
@@ -40,14 +40,16 @@ export function Feed() {
       <Container className="content" maxWidth="sm">
         <FakePostEditor onClick={(e) => handleOpen(e)} />
         <Modal open={postEditorOpen} onClose={handleClose}>
-          <PostEditor closeModal={handleClose} refetchFeed={true} />
+          <PostEditor closeModal={handleClose} refetchFeed={refetch} />
         </Modal>
         <div className="posts">
           <InfiniteScroll
             items={items}
             loading={loading}
             ItemComponent={Post}
-            itemProps={{}}
+            itemProps={{
+              refetchFeed: refetch,
+            }}
             hasMore={data?.feed?.pageInfo?.hasNextPage}
             loadMoreItems={loadMoreItems}
             /* TODO better component for showing these messages, and loading  */
