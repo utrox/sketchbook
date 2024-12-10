@@ -9,12 +9,8 @@ interface EditUserProfileData {
 }
 
 const useEditUserProfileData = () => {
-  const [editUserProfile, { data, loading, error }] = useMutation(
-    EDIT_USER_PROFILE,
-    {
-      refetchQueries: ["GetUserProfile"],
-    }
-  );
+  const [editUserProfile, { data, loading, error }] =
+    useMutation(EDIT_USER_PROFILE);
 
   const editProfile = async (values: EditUserProfileData) => {
     await editUserProfile({ variables: values });

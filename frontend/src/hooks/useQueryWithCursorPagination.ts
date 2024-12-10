@@ -76,10 +76,6 @@ const useQueryWithCursorPagination = (
         first: data[queryDataPropertyName].edges.length + loadAtOnceCount,
         after: currentCursor, // Uses the latest value
       }));
-      console.log(
-        "data endCursor: ",
-        data[queryDataPropertyName]?.pageInfo?.endCursor
-      );
 
       // Return the cursor to keep state consistent
       return currentCursor;

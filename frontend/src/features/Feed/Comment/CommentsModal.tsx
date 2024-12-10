@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { DialogTitle, Divider, List, Container } from "@mui/material";
 
 import useQueryComments from "../../../hooks/useQueryComments.ts";
@@ -7,41 +7,54 @@ import CommentEditor from "./CommentEditor.tsx";
 import { CommentType } from "../../../api/graphQL/types/CommentType.ts";
 import InfiniteScroll from "../../../components/InfiniteScroll.tsx";
 
-const CommentsModal = ({ postId }: { postId: number }) => {
-  const [comments, setComments] = useState<CommentProps[]>([]);
-  const { data, loading, loadMoreItems, refetch } = useQueryComments(postId);
+interface CommentsModalProps {
+  postId: number;
+}
 
-  useEffect(() => {
-    if (data) {
-      setComments(
-        data.allCommentsForPost.edges.map(
-          (edge: { node: CommentType }) => edge.node
-        )
-      );
-    }
-  }, [data]);
+const CommentsModal = forwardRef<HTMLDivElement, CommentsModalProps>(
+  ({ postId }, ref) => {
+    const [comments, setComments] = useState<CommentProps[]>([]);
+    const { data, loading, loadMoreItems, refetch } = useQueryComments(postId);
 
-  return (
-    <Container maxWidth="sm" className="comments-modal">
-      <DialogTitle>Comments</DialogTitle>
-      <Divider />
-      <List>
-        {/* TODO: 'No comments' doesnt fill up enough space, so the CommentEditor component is just in the middle vertically */}
-        {/* TODO: when only one comment exists, the same issue persists (doesnt fill the component enough vetically) */}
-        <InfiniteScroll
-          items={comments}
-          loading={loading}
-          ItemComponent={Comment}
-          itemProps={{}}
-          hasMore={data?.allCommentsForPost.pageInfo.hasNextPage}
-          loadMoreItems={loadMoreItems}
-          loadingComponent={<div>Loading...</div>}
-          hasNoElementComponent={<div>No comments</div>}
-        />
-      </List>
-      <CommentEditor postId={postId} refetchComments={refetch} />
-    </Container>
-  );
-};
+    useEffect(() => {
+      if (data) {
+        setComments(
+          data.allCommentsForPost.edges.map(
+            (edge: { node: CommentType }) => edge.node
+          )
+        );
+      }
+    }, [data]);
+
+    return (
+      <Container
+        maxWidth="sm"
+        className="comments-modal"
+        ref={ref}
+        // Here to fix the MUI error about the modal not being able to be focused
+        tabIndex={-1}
+        aria-labelledby="comments-modal-title"
+      >
+        <DialogTitle id="comments-modal-title">Comments</DialogTitle>
+        <Divider />
+        <List>
+          {/* TODO: 'No comments' doesnt fill up enough space, so the CommentEditor component is just in the middle vertically */}
+          {/* TODO: when only one comment exists, the same issue persists (doesnt fill the component enough vetically) */}
+          <InfiniteScroll
+            items={comments}
+            loading={loading}
+            ItemComponent={Comment}
+            itemProps={{}}
+            hasMore={data?.allCommentsForPost.pageInfo.hasNextPage}
+            loadMoreItems={loadMoreItems}
+            loadingComponent={<div>Loading...</div>}
+            hasNoElementComponent={<div>No comments</div>}
+          />
+        </List>
+        <CommentEditor postId={postId} refetchComments={refetch} />
+      </Container>
+    );
+  }
+);
 
 export default CommentsModal;
