@@ -1,10 +1,15 @@
 import { StoreObject, useMutation } from "@apollo/client";
 import { EDIT_POST_MUTATION } from "../api/graphQL/mutations/post";
 
+interface PostUpdateProps {
+  postId?: number;
+  postContent: string;
+}
+
 export const useEditPost = () => {
   const [updatePost, { error, loading }] = useMutation(EDIT_POST_MUTATION);
 
-  const editPost = async (postId: number, postContent: string) => {
+  const editPost = async ({ postId, postContent }: PostUpdateProps) => {
     await updatePost({
       variables: { id: postId, content: postContent },
       update: (cache) => {
@@ -31,6 +36,7 @@ export const useEditPost = () => {
       },
     });
   };
+
   return { editPost, error, loading };
 };
 

@@ -6,51 +6,37 @@ import ImageIcon from "@mui/icons-material/Image";
 import { Button, IconButton, Container, TextField } from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
 
-import useEditPost from "../../hooks/useEditPost";
-import useCreatePost from "../../hooks/useCreatePost";
-import useQueryFeed from "../../hooks/useQueryFeed";
-import useQueryPostHistory from "../../hooks/useQueryPostHistory";
+import useSubmitPostEditor from "../../hooks/useSubmitPostEditor";
+import useRefetchPostEditor from "../../hooks/useRefetchPostEditor";
 
 interface PostEditProps {
-  postId?: number | null;
+  postId?: number;
   initialContent?: string;
   closeModal: () => void;
   refetchFeed?: boolean;
 }
 
 const PostEditor = forwardRef<HTMLDivElement, PostEditProps>(
-  ({ postId = null, initialContent = "", closeModal, refetchFeed }, ref) => {
+  ({ postId, initialContent = "", closeModal, refetchFeed }, ref) => {
     const [postContent, setContent] = useState(initialContent);
-    const {
-      editPost,
-      error: updateError,
-      loading: updateLoading,
-    } = useEditPost();
-    const {
-      makePost,
-      error: createError,
-      loading: createLoading,
-    } = useCreatePost();
 
     const { pathname } = useLocation();
-    const { username } = useParams();
+    const username = useParams().username || "";
 
     const isProfileEditor = pathname.includes("profile");
-    const refetchQueryPostHistory = useQueryPostHistory(username || "").refetch;
-    const refetchQueryFeed = useQueryFeed().refetch;
 
-    const refetch = isProfileEditor
-      ? refetchQueryPostHistory
-      : refetchQueryFeed;
+    // Submit the post to the server, based on whether the user is editing
+    // an existing post or creating a new one.
+    const { makeRequest, loading, error } = useSubmitPostEditor(postId);
+
+    // Refetch the feed or the post history of the user, based on which
+    // page the user is viewing. (Feed or UserProfile)
+    const { refetch } = useRefetchPostEditor(isProfileEditor, username);
 
     const submitForm = async () => {
-      if (postId) {
-        await editPost(postId, postContent);
-      } else {
-        await makePost(postContent);
-      }
+      await makeRequest({ postContent, postId });
 
-      if (!createError && !updateError && !createLoading && !updateLoading) {
+      if (!error && !loading) {
         setContent("");
         toast.success(`Post ${postId ? "updated" : "created"} successfully.`);
         if (refetchFeed) refetch();
@@ -85,7 +71,7 @@ const PostEditor = forwardRef<HTMLDivElement, PostEditProps>(
           onChange={(e) => setContent(e.target.value)}
         />
         <div className="btns">
-          {/* TODO: ability to upload an image + possilbly drag & drop? */}
+          {/* TODO: ability to upload an image for posts */}
           <IconButton aria-label="delete">
             <ImageIcon />
           </IconButton>
@@ -94,7 +80,7 @@ const PostEditor = forwardRef<HTMLDivElement, PostEditProps>(
           </Button>
         </div>
         {/* TODO: loading component... */}
-        {createLoading && <p>Loading...</p>}
+        {loading && <p>Loading...</p>}
       </Container>
     );
   }
