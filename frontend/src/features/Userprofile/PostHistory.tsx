@@ -13,7 +13,8 @@ const PostHistory = () => {
   }
 
   const [items, setItems] = useState([]);
-  const { data, loading, loadMoreItems } = useQueryPostHistory(username);
+  const { data, loading, loadMoreItems, refetch } =
+    useQueryPostHistory(username);
 
   useEffect(() => {
     if (data) {
@@ -29,7 +30,9 @@ const PostHistory = () => {
         items={items}
         loading={loading}
         ItemComponent={Post}
-        itemProps={{}}
+        itemProps={{
+          refetchFeed: refetch,
+        }}
         hasMore={data?.feed?.pageInfo?.hasNextPage}
         loadMoreItems={loadMoreItems}
         /* TODO better component for showing these messages, and loading  */
