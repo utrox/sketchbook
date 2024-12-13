@@ -86,3 +86,31 @@ mutation DeletePost($id: Int!) {
   }
 }
 """
+
+USER_POST_HISTORY = """
+query GetUserPostHistory($username: String!, $after: String, $first: Int) {
+    postHistory(username: $username, after: $after, first: $first) {
+      edges {
+        node {
+          id
+          content
+          image
+          commentCount
+          likeCount
+          likedByUser
+          createdAt
+          updatedAt
+          user {
+            id
+            username
+            avatar
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+"""

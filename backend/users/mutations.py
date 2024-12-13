@@ -2,6 +2,9 @@ import logging
 import graphene
 from graphene_file_upload.scalars import Upload
 
+from users.validators import validate_password
+from core.exceptions import BadRequestException
+
 from .types import UserType
 
 
@@ -23,6 +26,11 @@ class EditUser(graphene.Mutation):
         if username:
             user.username = username
         if password:
+            errors = validate_password(password)
+            
+            if errors:
+                raise BadRequestException(errors)
+            
             user.set_password(password)
         if avatar:
             user.override_avatar(avatar)
