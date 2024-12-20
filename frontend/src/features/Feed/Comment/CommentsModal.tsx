@@ -38,8 +38,6 @@ const CommentsModal = forwardRef<HTMLDivElement, CommentsModalProps>(
         <DialogTitle id="comments-modal-title">Comments</DialogTitle>
         <Divider />
         <List>
-          {/* TODO: 'No comments' doesnt fill up enough space, so the CommentEditor component is just in the middle vertically */}
-          {/* TODO: when only one comment exists, the same issue persists (doesnt fill the component enough vetically) */}
           <InfiniteScroll
             items={comments}
             loading={loading}

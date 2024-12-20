@@ -22,6 +22,11 @@ https://github.com/apollographql/apollo-client/issues/3053
 
 Also, technically we are not using pagination, but rather "partial
 new data loading". We are loading new data in chunks, but we are not 
+
+TODO: refactor this, I figured out the good way to handle this.
+Basically we need to have pagination, but also we only want to poll the
+items that are currently being shown + couple of items of buffer zone. 
+No need to poll the ones that the user scrolled past 30 minutes ago. 
 */
 const useQueryWithCursorPagination = (
   graphqlQuery: DocumentNode,
@@ -35,17 +40,6 @@ const useQueryWithCursorPagination = (
     first: loadAtOnceCount,
     ...defaultVariables,
   });
-
-  /* 
-  TODO: review if this is needed:
-  const handleQueryVariableChange = (newVariables: QueryParameters) => {
-    setVariables({
-      ...newVariables,
-      ...defaultVariables,
-    });
-    // stopPolling();
-    // startPolling(refetchInterval);
-  }; */
 
   const { data, loading, refetch, startPolling, stopPolling } = useQuery(
     graphqlQuery,

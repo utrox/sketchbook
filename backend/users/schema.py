@@ -4,7 +4,7 @@ from .models import User
 from .types import UserType
 from .mutations import EditUser
 
-# TODO: tests for queries and mutations for user model
+
 class Query(graphene.ObjectType):
     me = graphene.Field(UserType)
     user_profile = graphene.Field(UserType, username=graphene.String(required=True))

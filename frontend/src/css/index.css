@@ -74,7 +74,6 @@ a {
     gap: 1rem;
   }
 
-  /* TODO: review this css, is it all needed? */
   .create-post,
   &.modal-content,
   .posts > * {
