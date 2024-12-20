@@ -15,7 +15,6 @@ from likes.models import PostLike, CommentLike
 from users.models import User, BACKGROUND_UPLOAD_PATH, AVATAR_UPLOAD_PATH
 
 
-# TODO: random created_at
 fake = Faker()
 
 NO_USERS = 20
