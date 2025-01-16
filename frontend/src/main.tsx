@@ -18,6 +18,17 @@ import App from "./App.tsx";
 import "bootstrap/dist/css/bootstrap.css";
 import "./css/index.css";
 
+// Read the CSRF Token from the cookie. 
+const getCSRFToken = (): string => {
+  const name = "csrftoken";
+  const cookies = document.cookie.split("; ");
+  for (let cookie of cookies) {
+    const [key, value] = cookie.split("=");
+    if (key === name) return value;
+  }
+  return "";
+};
+
 // Error-handler, when the grapQL API returns an error,
 // we're going to display the user-friendly message to the user
 // in a toast and log the details to the console.
@@ -35,6 +46,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const uploadLink = createUploadLink({
   uri: import.meta.env.VITE_BACKEND_GRAPHQL_URL,
+  headers: {
+    "X-CSRFToken": getCSRFToken(),
+  }
 });
 
 const link = from([errorLink, uploadLink]);
