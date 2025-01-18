@@ -8,29 +8,17 @@ import {
   ApolloProvider,
   InMemoryCache,
 } from "@apollo/client";
-import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
-
 import { onError } from "@apollo/client/link/error";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import App from "./App.tsx";
-import "bootstrap/dist/css/bootstrap.css";
 import "./css/index.css";
+import "bootstrap/dist/css/bootstrap.css";
 
-// Read the CSRF Token from the cookie.
-const getCSRFToken = (): string => {
-  const name = "csrftoken";
-  const cookies = document.cookie.split("; ");
-
-  for (const cookie of cookies) {
-    const [key, value] = cookie.split("=");
-    if (key === name) return value;
-  }
-
-  return "";
-};
+import App from "./App.tsx";
+import { getCSRFToken } from "./utils";
 
 // Error-handler, when the grapQL API returns an error,
 // we're going to display the user-friendly message to the user

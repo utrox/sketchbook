@@ -1,7 +1,8 @@
 import "./auth.css";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+
+import { fetchWithHandling } from "../../utils";
 import { useAuth } from "../../hooks/useAuth";
 import PageTitle from "../../components/PageTitle";
 
@@ -22,25 +23,18 @@ export const Register = () => {
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const response = await fetch(
+
+    await fetchWithHandling(
       `${import.meta.env.VITE_BACKEND_URL}/auth/register/`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ username, password }),
-      }
+      },
+      "Registration successful. You can now log in.",
+      () => navigate("/login")
     );
+
     setLoading(false);
-    if (response.ok) {
-      navigate("/login");
-      toast.success("Registration successful. You can now log in.");
-    } else {
-      const data = await response.json();
-      toast.error(data.errors?.[0].message || "An error occurred.");
-      console.error("Login error response: ", data);
-    }
   };
 
   return (

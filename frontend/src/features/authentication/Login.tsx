@@ -1,10 +1,10 @@
 import "./auth.css";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 
-import PageTitle from "../../components/PageTitle";
+import { fetchWithHandling } from "../../utils";
 import { useAuth } from "../../hooks/useAuth";
+import PageTitle from "../../components/PageTitle";
 
 export const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -23,26 +23,17 @@ export const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    const response = await fetch(
+    await fetchWithHandling(
       `${import.meta.env.VITE_BACKEND_URL}/auth/login/`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ username, password }),
-      }
+      },
+      "Login successful.",
+      () => (window.location.href = "/")
     );
 
     setLoading(false);
-    if (response.ok) {
-      toast.success("Login successful.");
-      window.location.href = "/";
-    } else {
-      const data = await response.json();
-      toast.error(data.errors?.[0].message || "An error occurred.");
-      console.error("Login error response: ", data);
-    }
   };
 
   return (
