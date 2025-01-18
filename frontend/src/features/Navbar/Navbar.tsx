@@ -1,7 +1,8 @@
 import "./navbar.css";
-
-import { Navbar, Image } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { Navbar, Image } from "react-bootstrap";
+
+import { fetchWithHandling } from "../../utils";
 import { useAuth } from "../../hooks/useAuth";
 
 /* Icons */
@@ -12,22 +13,12 @@ const MyNavbar = () => {
   const { user } = useAuth();
 
   const handleLogout = async () => {
-    const response = await fetch(
+    await fetchWithHandling(
       `${import.meta.env.VITE_BACKEND_URL}/auth/logout/`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
+      { method: "POST" },
+      "Logout successful.",
+      () => (window.location.href = "/login")
     );
-
-    if (response.ok) {
-      window.location.href = "/login";
-    } else {
-      const data = await response.json();
-      console.error("Logout error response: ", data);
-    }
   };
 
   return (
