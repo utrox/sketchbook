@@ -22,6 +22,19 @@ import App from "./App.tsx";
 import { getCSRFToken } from "./utils";
 
 
+// Read the CSRF Token from the cookie.
+const getCSRFToken = (): string => {
+  const name = "csrftoken";
+  const cookies = document.cookie.split("; ");
+
+  for (const cookie of cookies) {
+    const [key, value] = cookie.split("=");
+    if (key === name) return value;
+  }
+
+  return "";
+};
+
 // Error-handler, when the grapQL API returns an error,
 // we're going to display the user-friendly message to the user
 // in a toast and log the details to the console.
