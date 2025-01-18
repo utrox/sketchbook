@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import {
   from,
   ApolloClient,
+  ApolloLink,
   ApolloProvider,
   InMemoryCache,
 } from "@apollo/client";
@@ -18,14 +19,16 @@ import App from "./App.tsx";
 import "bootstrap/dist/css/bootstrap.css";
 import "./css/index.css";
 
-// Read the CSRF Token from the cookie. 
+// Read the CSRF Token from the cookie.
 const getCSRFToken = (): string => {
   const name = "csrftoken";
   const cookies = document.cookie.split("; ");
-  for (let cookie of cookies) {
+
+  for (const cookie of cookies) {
     const [key, value] = cookie.split("=");
     if (key === name) return value;
   }
+
   return "";
 };
 
@@ -46,12 +49,28 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
 const uploadLink = createUploadLink({
   uri: import.meta.env.VITE_BACKEND_GRAPHQL_URL,
-  headers: {
-    "X-CSRFToken": getCSRFToken(),
-  }
+  fetchOptions: {
+    // Ensure cookies are sent for CSRF protection
+    credentials: "include",
+  },
 });
 
-const link = from([errorLink, uploadLink]);
+// Adds the CSRF token to the headers and makes
+// sure that the cookies are sent with every request.
+const addCsrfTokenLink = new ApolloLink((operation, forward) => {
+  operation.setContext({
+    headers: {
+      ...operation.getContext().headers, // Preserving existing headers
+      "X-CSRFToken": getCSRFToken(),
+    },
+    credentials: "include",
+  });
+
+  // Forward the request to the next link in the chain
+  return forward(operation);
+});
+
+const link = from([errorLink, addCsrfTokenLink, uploadLink]);
 
 const client = new ApolloClient({
   link,

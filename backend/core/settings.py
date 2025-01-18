@@ -28,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SKTCH_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('SKTCH_DEBUG', 'True').lower() == 'true'
+IS_PRODUCTION = os.environ.get('SKTCH_ENV', 'development') == 'production'
+DEBUG = os.environ.get('SKTCH_DEBUG', 'False' if IS_PRODUCTION else 'True').lower() == 'true'
 
 ALLOWED_HOSTS = os.environ.get('SKTCH_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
@@ -153,7 +154,34 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "users.User"
 
-CORS_ALLOWED_ORIGINS = os.environ.get('SKTCH_CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+# Because in a development environment the frontend and backend are served on different ports,
+# we need to set the CSRF_COOKIE_SAMESITE to 'Lax' in order to allow the frontend to send
+# cookies to the backend. In production, the frontend and backend are served on the same domain,
+# so we can set the CSRF_COOKIE_SAMESITE to 'Strict'.
+# Also, if you're accessing the frontend on localhost, make sure that the link in .env.development
+# is set to http://localhost:8000. Otherwise, if it's set to http://127.0.0.1:8000, you're going to spend 
+# hours debugging why the CSRF cookie is not being sent to the backend when you have everything set up correctly,
+# and you'll think about switching careers to be a tram driver instead.
+CSRF_COOKIE_SAMESITE = 'Strict' if IS_PRODUCTION else 'Lax'
+CSRF_TRUSTED_ORIGINS = os.environ.get('SKTCH_CSRF_TRUSTED_ORIGINS', 'http://localhost:5173,http://localhost:8000').split(',')
+
+CORS_ALLOWED_ORIGINS = os.environ.get('SKTCH_CORS_ALLOWED_ORIGINS', 'http://localhost:5173,http://localhost:8000').split(',')
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'x-csrftoken',
+    'csrftoken',
+    'authorization',
+]
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",  # Make sure OPTIONS is allowed for preflight
+]
+
 
 # Settings for paths
 

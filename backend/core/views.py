@@ -5,10 +5,12 @@ from pathlib import Path
 from django.http import HttpResponse
 from django.utils._os import safe_join
 from django.views.static import serve as static_serve
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 logger = logging.getLogger(__name__)
 
 
+@ensure_csrf_cookie
 def serve_react(request, path, document_root=None):
     logging.info("Serving static file: %s", path)
     path = posixpath.normpath(path).lstrip("/")
